@@ -1,4 +1,4 @@
-name: Deploy prototype to GitHub Pages
+name: Deploy KAUSYNC staging to GitHub Pages
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: github-pages
+  group: kausync-staging-pages
   cancel-in-progress: true
 
 jobs:
@@ -22,6 +22,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run verify:snapshot
+      - run: npm run typecheck
+      - run: npm test
       - run: npm run build
         env:
           GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}

@@ -3,12 +3,8 @@ export type Scenario = 'confirmed' | 'insufficient' | 'fouling' | 'rate-change';
 export type EvidenceState = 'Supported' | 'Contradicted' | 'Missing' | 'Not applicable';
 export type Evidence = { label: string; state: EvidenceState; explanation: string; source: string };
 export type Assessment = { tier: 'Strong' | 'Moderate' | 'Insufficient'; mechanism: string; recommendation: string; nextStep: string; evidence: Evidence[]; candidates: { name: string; rank: number; reason: string }[]; approval: boolean };
-export const ASSUMPTIONS = { referenceRate: 30, pressureExponent: 2, dutyExponent: 1, dpBoundary: 0.9 } as const;
-export function normalizeHe(dp: number, duty: number, rate: number, referenceRate = ASSUMPTIONS.referenceRate) {
-  if (rate <= 0 || referenceRate <= 0) throw new Error('Positive rate required');
-  return { dp: dp * (referenceRate / rate) ** ASSUMPTIONS.pressureExponent, duty: duty * (referenceRate / rate) ** ASSUMPTIONS.dutyExponent };
-}
-export function boundaryWindow(dp: number, weeklySlope: number, boundary = ASSUMPTIONS.dpBoundary) {
+export const HE_SOURCE_DP_TRIP = 0.9;
+export function boundaryWindow(dp: number, weeklySlope: number, boundary = HE_SOURCE_DP_TRIP) {
   if (weeklySlope <= 0 || dp >= boundary) return null;
   const days = (boundary - dp) / (weeklySlope / 7);
   return { low: Math.max(0, Math.floor(days * .7)), high: Math.ceil(days * 1.3), central: days };
@@ -26,18 +22,17 @@ export function assessKo(input: { vibration: number; water?: number | null; pres
   const strong=input.vibration>=45 && input.water!>=500 && input.temperature>=95;
   return {tier:strong?'Strong':'Moderate',mechanism:'Cooler leakage → water contamination → oil-film degradation → bearing distress',recommendation:strong?'Inspect cooler integrity and plan a controlled intervention.':'Continue enhanced monitoring and obtain corroborating inspection evidence.',nextStep:input.coolerConfirmed?'Reliability Engineer to propose intervention with manager approval.':'Confirm cooler integrity by inspection or leak test.',evidence,candidates:[{name:'Cooler leakage / water ingress',rank:1,reason:'Water rise, bearing heat, vibration trend, and post-event cooler confirmation align.'},{name:'Process disturbance / surge',rank:2,reason:'Contradicted by RCA anti-surge check; aligned live trend unavailable.'},{name:'Normal bearing wear',rank:3,reason:'Bearing was within stated design service life.'},{name:'Sensor or instrument issue',rank:4,reason:'Weekly displacement is coherent, while hourly velocity unit remains unresolved.'}],approval:strong};
 }
-export function assessHe(input: { rawDp: number; rawDuty: number; rate: number; heavyEnds?: number | null; rateAvailable?: boolean; simulated?: boolean; recentWeeklySlope?: number }): Assessment & { normalized?: {dp:number;duty:number}; runway: ReturnType<typeof boundaryWindow> } {
-  if (input.rateAvailable===false || input.rate<=0) return {tier:'Insufficient',mechanism:'Performance assessment deferred',recommendation:'Validate feed rate and tube-side dP before selecting an intervention.',nextStep:'Request synchronized operating rate and pressure evidence.',approval:false,evidence:[{label:'Rate basis',state:'Missing',explanation:'Normalization cannot be calculated without a valid rate.',source:'Hourly production workbook / assumed scenario'}],candidates:[],runway:null};
-  const n=normalizeHe(input.rawDp,input.rawDuty,input.rate);
-  const degraded=n.dp>=.6 && n.duty<90;
-  const feed=(input.heavyEnds??0)>=1.5;
-  const e:Evidence[]=[
-    {label:'Normalized tube-side dP',state:degraded?'Supported':'Contradicted',explanation:`${n.dp.toFixed(3)} bar at an assumed 30 t/h reference rate. Pressure exponent 2 is an unvalidated demo assumption.`,source:'Weekly HE condition record / assumed normalization'},
-    {label:'Normalized heat duty',state:degraded?'Supported':'Contradicted',explanation:`${n.duty.toFixed(1)}% at the same reference rate; linear duty scaling is an unvalidated demo assumption.`,source:'Weekly HE condition record / assumed normalization'},
-    {label:'Feed heavy-ends',state:input.heavyEnds==null?'Missing':feed?'Supported':'Contradicted',explanation:input.heavyEnds==null?'Lab evidence unavailable.':`${input.heavyEnds.toFixed(2)}% versus RCA design <1.5%.`,source:'HE weekly condition record / RCA4'},
-    {label:'Filter differential pressure',state:'Missing',explanation:'RCA names a monitoring gap; no aligned filter dP series is supplied.',source:'RCA4 slide 7'}
+export function assessHe(input: { rawDp: number; rawDuty: number; heavyEnds?: number | null; rateHypothesis?: boolean; recentWeeklySlope?: number; persistenceWeeks?: number }): Assessment & { runway: ReturnType<typeof boundaryWindow> } {
+  const degraded=input.rawDp>=.6 && input.rawDuty<90;
+  const feed=input.heavyEnds!=null && input.heavyEnds>=1.5;
+  const rateGap=input.rateHypothesis===true;
+  const evidence:Evidence[]=[
+    {label:'Raw tube-side dP',state:input.rawDp>=.6?'Supported':'Contradicted',explanation:`${input.rawDp.toFixed(3)} bar in the dated weekly record; source alert/trip limits are 0.6/0.9 bar.`,source:'HE Condition History / Equipment Info'},
+    {label:'Raw heat duty',state:input.rawDuty<90?'Supported':'Contradicted',explanation:`${input.rawDuty.toFixed(1)}% of design in the same weekly row; source alert/trip limits are 90/70%.`,source:'HE Condition History / Equipment Info'},
+    {label:'Feed heavy-ends',state:input.heavyEnds==null?'Missing':feed?'Supported':'Contradicted',explanation:input.heavyEnds==null?'Weekly reading unavailable.':`${input.heavyEnds.toFixed(3)}% in the weekly record versus 1.5% source alert.`,source:'HE Condition History / Equipment Info'},
+    {label:'Synchronized rate and pressure pair',state:'Missing',explanation:'Hourly feed exists for May but cannot be paired reliably with date-only weekly dP and duty. Tube inlet/outlet pressure and filter dP are absent.',source:'HE Sheet2 / Condition History / PI Tag'}
   ];
-  const fouling=degraded&&feed;
-  const runway=fouling?boundaryWindow(n.dp,input.recentWeeklySlope ?? .064):null;
-  return {tier:fouling?'Strong':degraded?'Moderate':'Moderate',mechanism:fouling?'Progressive tube-side coke/polymer fouling':'Rate effect or other operating variation',recommendation:fouling?'Plan cleaning after engineering and manager review.':'Do not recommend cleaning from raw duty change alone. Continue monitoring and validate the operating context.',nextStep:fouling?'Confirm cleaning window and upstream heavy-ends control.':'Check the rate-normalized trend and pressure instrumentation.',approval:fouling,evidence:e,candidates:[{name:'Progressive fouling',rank:fouling?1:2,reason:fouling?'Normalized dP and duty deteriorate with elevated heavy-ends.':'Normalized performance is stable in this scenario.'},{name:'Throughput/rate change',rank:fouling?2:1,reason:fouling?'Cannot explain the combined normalized degradation.':'Raw values change in proportion to the simulated rate.'},{name:'Feed-quality change',rank:3,reason:feed?'Elevated heavy-ends supports deposit formation; source of carry-over remains unverified.':'Heavy-ends remain near baseline.'},{name:'Sensor/data issue',rank:4,reason:'Pressure pair and aligned rate must be validated in a real deployment.'},{name:'Other thermal/hydraulic disturbance',rank:5,reason:'Shell-side aligned temperatures are unavailable.'}],normalized:n,runway};
+  const fouling=degraded&&feed&&(input.persistenceWeeks??0)>=2;
+  const runway=fouling&&!rateGap?boundaryWindow(input.rawDp,input.recentWeeklySlope??0):null;
+  return {tier:rateGap?'Insufficient':fouling?'Moderate':'Insufficient',mechanism:rateGap?'Rate effect cannot be ruled out from supplied measurements':fouling?'Persistent hydraulic and thermal deterioration; historical RCA reports fouling':'Cause not established by current weekly record',recommendation:rateGap?'Do not approve cleaning on a rate-change hypothesis without synchronized measurements.':fouling?'Inspect and plan a controlled intervention; verify rate and pressure context before approval.':'Continue monitoring and gather synchronized operating evidence.',nextStep:'Request time-aligned feed, tube pressure pair, filter dP and thermal basis from the process engineer.',approval:false,evidence,candidates:[{name:'Progressive fouling',rank:fouling&&!rateGap?1:2,reason:'At least two consecutive weekly dP, duty and heavy-ends readings cross alerts; RCA inspection is post-event evidence.'},{name:'Throughput or rate effect',rank:rateGap?1:2,reason:'May affect raw performance, but weekly values cannot be normalized from the supplied hourly period.'},{name:'Feed-quality change',rank:3,reason:'Heavy-ends is measured weekly; upstream source remains unresolved.'},{name:'Instrument or other thermal disturbance',rank:4,reason:'No synchronized pressure pair, filter dP or complete thermal balance.'}],runway};
 }

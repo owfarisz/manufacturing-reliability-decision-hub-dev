@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import {existsSync,readFileSync} from 'node:fs';
-import {assessKo,assessHe,normalizeHe} from '../domain/decision';
+import {assessKo,assessHe,boundaryWindow} from '../domain/decision';
 import {initialCase,transition} from '../domain/workflow';
 const sourceFixturePath=new URL('../src/generated/fixtures.json',import.meta.url);
 const hasSourceFixture=existsSync(sourceFixturePath);
@@ -42,13 +42,17 @@ describe('explainable assessment',()=>{
   const weak=assessKo({vibration:76.5,water:null,pressure:1.078,temperature:112.2,waterStale:true});
   expect(weak.tier).toBe('Insufficient');expect(weak.approval).toBe(false);
  });
- it('does not recommend cleaning when raw duty loss is explained by rate',()=>{
-  const n=normalizeHe(.355*.7**2,70,21);
-  expect(n.dp).toBeCloseTo(.355);expect(n.duty).toBeCloseTo(100);
-  const rate=assessHe({rawDp:.355*.7**2,rawDuty:70,rate:21,heavyEnds:1.2,simulated:true});
-  expect(rate.recommendation).toContain('Do not recommend cleaning');expect(rate.approval).toBe(false);
-  const fouling=assessHe({rawDp:.918,rawDuty:68.6,rate:30,heavyEnds:2.448});
-  expect(fouling.mechanism).toContain('fouling');expect(fouling.approval).toBe(true);
+ it('keeps HE raw values and abstains on an unverified rate hypothesis',()=>{
+  const review=assessHe({rawDp:.854,rawDuty:72.706,heavyEnds:2.288,rateHypothesis:true,recentWeeklySlope:.064});
+  expect(review.tier).toBe('Insufficient');
+  expect(review.approval).toBe(false);
+  expect(review.runway).toBeNull();
+  expect(review.evidence.find(e=>e.label==='Synchronized rate and pressure pair')?.state).toBe('Missing');
+  const observed=assessHe({rawDp:.918,rawDuty:68.6,heavyEnds:2.448,recentWeeklySlope:.064,persistenceWeeks:2});
+  expect(observed.mechanism).toContain('historical RCA');
+  expect(observed.approval).toBe(false);
+  expect(observed.runway).toBeNull();
+  expect(boundaryWindow(.854,.064)?.central).toBeCloseTo(5.03125);
  });
 });
 describe('human workflow gates',()=>{
@@ -56,7 +60,7 @@ describe('human workflow gates',()=>{
   let c=initialCase('KO-3201','confirmed');
   c=transition(c,'validate','Shift Supervisor','Validated operation','hourly status');
   c=transition(c,'assess','Reliability Engineer','Reviewed weekly samples','weekly KO');
-  c={...c,selectedAction:'Plan controlled intervention',rationale:'Water and vibration are both elevated'};
+  c={...c,selectedAction:'Plan controlled intervention',rationale:'Water and vibration are both elevated',disposition:'Accept',dispositionReason:'Weekly readings and RCA support inspection',acceptanceCriteria:'Water below 500 ppm and displacement below 45 micron through week 26'};
   c=transition(c,'propose','Reliability Engineer','Proposed repair','RCA2');
   expect(c.state).toBe('APPROVAL_REQUIRED');
   expect(()=>transition(c,'approve','Technician','Looks good','RCA2')).toThrow();
@@ -71,7 +75,7 @@ describe('human workflow gates',()=>{
   expect(c.state).toBe('PERFORMANCE_RESTORED');
   c=transition(c,'monitor','Reliability Engineer','Monitoring begun','weekly KO');
   expect(()=>transition(c,'verify','Reliability Engineer','Close now','weekly KO')).toThrow();
-  c={...c,criteriaChecked:true,observationComplete:true,upstreamControlled:true};
+  c={...c,criteriaChecked:true,observationComplete:true,upstreamControlled:true,verificationWeek:25,verificationEvidence:'2026-06-03 weekly condition record and work pack',followupAction:'Cooler leak test assigned to planner'};
   expect(()=>transition(c,'verify','Technician','Close now','weekly KO')).toThrow();
   c=transition(c,'verify','Reliability Engineer','Criteria met after observation','weekly KO');
   expect(c.state).toBe('VERIFIED_CLOSED');expect(c.audit).toHaveLength(9);

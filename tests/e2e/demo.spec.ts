@@ -14,6 +14,9 @@ test('portfolio to KO decision, approval and verification',async({page})=>{
  await page.screenshot({path:'docs/screenshots/ko.png',fullPage:true,caret:'initial'});
  await page.getByRole('button',{name:'Select'}).nth(3).click();
  await page.getByLabel('Decision rationale').fill('Weekly water and vibration evidence justify a planned intervention.');
+ await page.getByLabel('Engineer disposition').selectOption('Accept');
+ await page.getByLabel('Disposition reason').fill('Weekly source pattern supports cooler inspection.');
+ await page.getByLabel('Numeric acceptance criteria').fill('Water below 500 ppm and vibration below 45 micron through the final recorded week.');
  await page.getByRole('button',{name:'Validate operating state'}).click();
  await page.getByRole('button',{name:'Engineer assessment'}).click();
  await page.getByRole('button',{name:'Propose decision'}).click();
@@ -27,6 +30,9 @@ test('portfolio to KO decision, approval and verification',async({page})=>{
  await page.getByRole('button',{name:'Supervisor confirms restoration'}).click();
  await expect(page.getByText('PERFORMANCE RESTORED',{exact:false}).first()).toBeVisible();
  await page.getByRole('button',{name:'Engineer starts monitoring'}).click();
+ await page.getByLabel('Observed source week').selectOption('25');
+ await page.getByLabel('Verification evidence reference').fill('2026-06-03 condition record and repair pack');
+ await page.getByLabel('Upstream follow-up action').fill('Cooler leak test assigned to planner for next review.');
  await page.getByRole('button',{name:'Verify technical closure'}).click();
  await expect(page.getByText('Technician cannot verify.')).toBeVisible();
  await page.locator('.checklist input[type=checkbox]').first().check();
@@ -42,17 +48,21 @@ test('HE rate-change does not propose cleaning',async({page})=>{
  await page.goto('/assets/he-3301');
  await expect(page.getByRole('heading',{name:'Fouling & cleaning decision'})).toBeVisible();
  await page.screenshot({path:'docs/screenshots/he.png',fullPage:true,caret:'initial'});
- await page.getByLabel('Demo scenario').selectOption('rate-change');
- await expect(page.getByText('Do not recommend cleaning from raw duty change alone.',{exact:false}).first()).toBeVisible();
- await page.getByRole('button',{name:'Rate-normalized demonstration'}).click();
- await expect(page.getByText('0.355',{exact:false}).first()).toBeVisible();
+ await page.getByLabel('Evidence view').selectOption('rate-change');
+ await expect(page.getByText('Do not approve cleaning on a rate-change hypothesis',{exact:false}).first()).toBeVisible();
+ await page.getByRole('button',{name:'Normalized view'}).click();
+ await expect(page.getByText('NOT CALCULABLE FROM SUPPLIED DATA')).toBeVisible();
  await page.screenshot({path:'docs/screenshots/he-rate-change.png',fullPage:true,caret:'initial'});
 });
 
 test('HE fouling follows approval and effectiveness gate',async({page})=>{
  await page.goto('/assets/he-3301');
  await page.getByRole('button',{name:'Select'}).nth(3).click();
- await page.getByLabel('Decision rationale').fill('Normalized dP and duty deteriorate with heavy-ends; plan cleaning.');
+ await page.getByLabel('Decision rationale').fill('Weekly dP and duty deteriorate with heavy-ends; rate context requires verification.');
+ await page.getByLabel('Engineer disposition').selectOption('Modify');
+ await page.getByLabel('Disposition reason').fill('Require synchronized feed and pressure review before cleaning.');
+ await page.getByLabel('Numeric acceptance criteria').fill('Tube dP below 0.6 bar and duty above 90 percent through week 26.');
+ await page.getByLabel('Manager review of missing synchronized evidence').fill('RCA deposit inspection supports cleaning; confirm rate and tube pressure pair before executing.');
  await page.getByRole('button',{name:'Validate operating state'}).click();
  await page.getByRole('button',{name:'Engineer assessment'}).click();
  await page.getByRole('button',{name:'Propose decision'}).click();
@@ -66,6 +76,9 @@ test('HE fouling follows approval and effectiveness gate',async({page})=>{
  await page.getByRole('button',{name:'Engineer starts monitoring'}).click();
  await page.locator('.checklist input[type=checkbox]').first().check();
  await page.locator('.checklist input[type=checkbox]').nth(1).check();
+ await page.getByLabel('Observed source week').selectOption('25');
+ await page.getByLabel('Verification evidence reference').fill('2026-06-25 condition record and cleaning pack');
+ await page.getByLabel('Upstream follow-up action').fill('Process engineer to trend heavy-ends and add filter dP monitoring.');
  await page.getByLabel('Verifier role').selectOption('Process Engineer');
  await page.getByRole('button',{name:'Verify technical closure'}).click();
  await expect(page.getByText('Prerequisites missing for verify.')).toBeVisible();
