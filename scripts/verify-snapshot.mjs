@@ -34,6 +34,8 @@ assert.equal(ui.rcaEvents['KO-3201'].length,5);
 assert.equal(ui.rcaEvents['HE-3301'].length,4);
 assert.equal(ui.rcaEvents['KO-3201'][1].reportedTime,'29-Apr-2026 06:40');
 assert.equal(ui.rcaEvents['HE-3301'][1].reportedTime,'21-May-2026 09:00');
+assert.ok(Object.values(ui.registry).every(source=>source.sheet&&source.timestampOrRange),'Measured and incident sources need a location and time range');
+assert.ok(ui.conflicts.every(conflict=>conflict.sheet),'Reconciliation items need an explicit sheet or slide');
 if(process.argv.includes('--with-sources')){
  const root=process.env.CASE2_DATA_ROOT??fileURLToPath(new URL('../../Case 2_ Intelligence Manufacturing/',import.meta.url));
  for(const [relative,want] of Object.entries({...ui.snapshot.sourceHashes,...ui.snapshot.rcaHashes})){

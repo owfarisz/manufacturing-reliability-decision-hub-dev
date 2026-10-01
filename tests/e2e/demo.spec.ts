@@ -1,4 +1,22 @@
 import {test,expect} from '@playwright/test';
+test('source drawer identifies sheets, slides and demo scenarios',async({page})=>{
+ await page.goto('/');
+ await page.getByRole('button',{name:'RCA reported'}).first().click();
+ let drawer=page.getByRole('dialog',{name:'Evidence and provenance'});
+ await expect(drawer.locator('dl')).toContainText('Slides 2-11');
+ await expect(drawer.locator('dt',{hasText:'Sheet / slide'}).locator('xpath=following-sibling::dd[1]')).toHaveText('Slides 2-11');
+ await page.getByRole('button',{name:'Close'}).click();
+ await page.locator('.quality-panel summary').click();
+ await page.getByRole('button',{name:'Open reconciliation detail'}).first().click();
+ drawer=page.getByRole('dialog',{name:'Evidence and provenance'});
+ await expect(drawer.locator('dl')).toContainText('PI Tag; Condition History');
+ await expect(drawer.locator('dt',{hasText:'Sheet / slide'}).locator('xpath=following-sibling::dd[1]')).toHaveText('PI Tag; Condition History');
+ await page.getByRole('button',{name:'Close'}).click();
+ await page.goto('/assets/ko-3201');
+ await page.getByLabel('Demo scenario').selectOption('insufficient');
+ await page.locator('.condition .card').nth(1).getByRole('button',{name:'Simulated · Demo scenario'}).click();
+ await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('Not applicable (demo scenario)');
+});
 test('portfolio to KO decision, approval and verification',async({page})=>{
  await page.goto('/');
  await expect(page.getByRole('heading',{name:'Turn exposure into action.'})).toBeVisible();
