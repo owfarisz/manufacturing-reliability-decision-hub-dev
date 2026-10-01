@@ -10,5 +10,5 @@ export function DevHub({view}:{view:'portfolio'|'ko'|'he'|'actions'}){
  useEffect(()=>{const saved=sessionStorage.getItem('kausync-role') as Role|null;if(saved)setRole(saved)},[]);
  const choose=(next:Role)=>{sessionStorage.setItem('kausync-role',next);sessionStorage.setItem('kausync-guide-open','page');setRole(next)};
  const changeRole=()=>{sessionStorage.removeItem('kausync-role');sessionStorage.removeItem('kausync-guide-open');sessionStorage.removeItem('kausync-flow-step');setRole(null)};
- return <>{role?<><Hub view={view} sidebarAddon={<button className="navitem sidebar-role-switch" type="button" onClick={changeRole} aria-label={`Viewing as ${role}. Change role`} title={`Viewing as ${role}. Change role`}><strong aria-hidden="true">R</strong><span>Change role</span></button>}/><OnboardingTour view={view} role={role}/></>:<RoleLanding onChoose={choose}/>}</>;
+ return <>{role?<><Hub view={view} sidebarAddon={<button className="navitem sidebar-role-switch" type="button" onClick={changeRole} aria-label={`Viewing as ${role}. Change role`} title={`Viewing as ${role}. Change role`} style={{background:'transparent',border:'1px solid transparent',color:'#d6e9f7'}}><strong aria-hidden="true">R</strong><span>Change role</span></button>}/><OnboardingTour view={view} role={role}/></>:<RoleLanding onChoose={choose}/>}</>;
 }
