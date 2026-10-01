@@ -1,0 +1,12 @@
+node_modules
+node_modules-broken
+.next
+.npm-cache
+*.tsbuildinfo
+playwright-report
+test-results
+out
+.DS_Store
+docs/source-extracts/
+docs/data-validation.json
+src/generated/fixtures.json
