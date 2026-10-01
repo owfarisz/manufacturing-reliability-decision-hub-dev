@@ -1,2 +1,2 @@
-import {Hub} from '@/components/Hub';
-export default function Page(){return <Hub view="actions"/>}
+import {DevHub} from '@/components/DevHub';
+export default function Page(){return <DevHub view="actions"/>}
