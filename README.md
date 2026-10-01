@@ -60,7 +60,9 @@ Open `http://127.0.0.1:3000`. Use `npm run build`, `npm run typecheck`, and `npm
 
 ### GitHub Pages preparation
 
-The optional GitHub Actions workflow exports static pages under `/manufacturing-reliability-decision-hub`. The regular local build and browser tests retain the root path. To validate the Pages export locally, run `GITHUB_PAGES_BASE_PATH=/manufacturing-reliability-decision-hub npm run build` and inspect `out/`. The workflow requires GitHub Pages to use GitHub Actions as its publishing source.
+The GitHub Actions workflow exports static pages under a path based on the repository name. Production is `https://owfarisz.github.io/manufacturing-reliability-decision-hub/`; staging is `https://owfarisz.github.io/manufacturing-reliability-decision-hub-staging/`. Both GitHub repositories use GitHub Actions as their Pages source. The regular local build and browser tests retain the root path. To validate either Pages export locally, set `GITHUB_PAGES_BASE_PATH` and `NEXT_PUBLIC_DEMO_STORAGE_NAMESPACE` to that repository name before `npm run build`, then inspect `out/`.
+
+Staging is pushed from the local `staging` branch to the staging repository's `main` branch. Test there first; only promote a reviewed commit to the production repository's `main` branch. The browser demo state is namespaced per site, so staging actions do not change the production demo state even though both sites share the `owfarisz.github.io` origin. Staging displays a visible `STAGING · DEMO` badge.
 
 The repository ignore rules exclude the original source extracts, full normalized fixture corpus, and validation report. The published app still includes `src/generated/ui.json` in its browser bundle: it contains the displayed case figures, weekly KO/HE samples, provenance labels, and scenario inputs. Anyone able to visit the Pages site can inspect that data. The app has no login or server-side access control. The full source-contract tests run only when the local normalized fixture is present; assessment and workflow tests run in either case.
 

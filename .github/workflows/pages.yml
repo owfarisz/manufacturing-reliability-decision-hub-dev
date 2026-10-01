@@ -24,7 +24,8 @@ jobs:
       - run: npm ci
       - run: npm run build
         env:
-          GITHUB_PAGES_BASE_PATH: /manufacturing-reliability-decision-hub
+          GITHUB_PAGES_BASE_PATH: /${{ github.event.repository.name }}
+          NEXT_PUBLIC_DEMO_STORAGE_NAMESPACE: ${{ github.event.repository.name }}
       - run: touch out/.nojekyll
       - uses: actions/upload-pages-artifact@v4
         with:
