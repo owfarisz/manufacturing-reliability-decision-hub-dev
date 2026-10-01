@@ -22,4 +22,4 @@ This trace covers the Must Have sections of the two source PRDs. The user's late
 
 The deployed browser bundle includes a fixed derived `ui.json` snapshot and SHA-256 hashes of 11 original workbooks and five RCA decks. `npm run verify:snapshot` checks completeness and key incident/asset records before every staging deployment. Source files, full incident corpus, and local validation extracts stay outside the published repository.
 
-Role selection and workflow transition checks in staging are demonstrations of the MVP approval flow, not authenticated RBAC. Both PRDs place full role-based access and approvals in their Phase 3 roadmap. The public, static GitHub Pages site has no identity provider or trusted server to enforce user permissions; production RBAC remains unimplemented.
+Role selection, state-aware "My actions" filtering, and workflow transition checks in staging demonstrate the MVP approval flow, not authenticated RBAC. Both PRDs place full role-based access and approvals in their Phase 3 roadmap. The public, static GitHub Pages site has no identity provider or trusted server to enforce user permissions; production RBAC remains unimplemented.

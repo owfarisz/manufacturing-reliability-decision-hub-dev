@@ -1,4 +1,14 @@
 import {test,expect} from '@playwright/test';
+test('My actions follows the selected demo role and current task',async({page})=>{
+ await page.goto('/actions');
+ await expect(page.locator('.table tbody tr')).toHaveCount(2);
+ await page.getByRole('button',{name:'My actions'}).click();
+ await expect(page.locator('.table tbody tr')).toHaveCount(1);
+ await expect(page.locator('.table tbody')).toContainText('KO-3201');
+ await page.getByLabel('View as role (demo)').selectOption('Process Engineer');
+ await expect(page.locator('.table tbody tr')).toHaveCount(1);
+ await expect(page.locator('.table tbody')).toContainText('HE-3301');
+});
 test('source drawer identifies sheets, slides and demo scenarios',async({page})=>{
  await page.goto('/');
  await page.getByRole('button',{name:'RCA reported'}).first().click();
