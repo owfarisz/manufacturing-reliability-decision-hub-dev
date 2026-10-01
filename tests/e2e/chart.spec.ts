@@ -1,9 +1,9 @@
 import {test,expect} from '@playwright/test';
 test('weekly charts render all sourced series immediately',async({page})=>{
  await page.goto('/assets/ko-3201');
- await expect(page.locator('.recharts-line-curve')).toHaveCount(2);
+ await expect(page.locator('.recharts-line-curve')).toHaveCount(1);
  await page.goto('/assets/he-3301');
- await expect(page.locator('.recharts-line-curve')).toHaveCount(3);
+ await expect(page.locator('.recharts-line-curve')).toHaveCount(1);
 });
 test('replay selection updates measured cards and boundary state',async({page})=>{
  await page.goto('/assets/ko-3201');

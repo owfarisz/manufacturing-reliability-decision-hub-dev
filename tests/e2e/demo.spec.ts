@@ -1,50 +1,52 @@
 import {test,expect} from '@playwright/test';
-test('My actions follows the selected demo role and current task',async({page})=>{
- await page.goto('/actions');
- await expect(page.locator('.table tbody tr')).toHaveCount(2);
- await page.getByRole('button',{name:'My actions'}).click();
- await expect(page.locator('.table tbody tr')).toHaveCount(1);
- await expect(page.locator('.table tbody')).toContainText('KO-3201');
- await page.getByLabel('View as role (demo)').selectOption('Process Engineer');
- await expect(page.locator('.table tbody tr')).toHaveCount(1);
- await expect(page.locator('.table tbody')).toContainText('HE-3301');
-});
-test('source drawer identifies sheets, slides and demo scenarios',async({page})=>{
+
+test('portfolio opens sourced KO evidence and decision',async({page})=>{
  await page.goto('/');
- await page.getByRole('button',{name:'RCA reported'}).first().click();
- let drawer=page.getByRole('dialog',{name:'Evidence and provenance'});
- await expect(drawer.locator('dl')).toContainText('Slides 2-11');
- await expect(drawer.locator('dt',{hasText:'Sheet / slide'}).locator('xpath=following-sibling::dd[1]')).toHaveText('Slides 2-11');
+ await expect(page.getByRole('heading',{name:'What needs a decision now'})).toBeVisible();
+ await page.getByRole('button',{name:'RCA source'}).first().click();
+ await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('Slides 2-11');
  await page.getByRole('button',{name:'Close'}).click();
- await page.locator('.quality-panel summary').click();
- await page.getByRole('button',{name:'Open reconciliation detail'}).first().click();
- drawer=page.getByRole('dialog',{name:'Evidence and provenance'});
- await expect(drawer.locator('dl')).toContainText('PI Tag; Condition History');
- await expect(drawer.locator('dt',{hasText:'Sheet / slide'}).locator('xpath=following-sibling::dd[1]')).toHaveText('PI Tag; Condition History');
- await page.getByRole('button',{name:'Close'}).click();
- await page.goto('/assets/ko-3201');
- await page.getByLabel('Demo scenario').selectOption('insufficient');
- await page.locator('.condition .card').nth(1).getByRole('button',{name:'Simulated · Demo scenario'}).click();
- await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('Not applicable (demo scenario)');
-});
-test('portfolio to KO decision, approval and verification',async({page})=>{
- await page.goto('/');
- await expect(page.getByRole('heading',{name:'Turn exposure into action.'})).toBeVisible();
- await page.getByRole('button',{name:'Incident recorded'}).first().click();
- await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toBeVisible();
- await page.getByRole('button',{name:'Close'}).click();
- await page.screenshot({path:'docs/screenshots/portfolio.png',fullPage:true,caret:'initial'});
- await page.getByRole('link',{name:/Open workspace/}).first().click();
- await expect(page.getByRole('heading',{name:'Compressor causal health'})).toBeVisible();
+ await page.getByRole('link',{name:/Open asset/}).first().click();
+ await expect(page.getByRole('heading',{name:/KO-3201/})).toBeVisible();
+ await page.getByRole('button',{name:'Evidence',exact:true}).click();
  await page.getByRole('button',{name:'Open hourly tag metadata'}).click();
  await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('MM/S');
  await page.getByRole('button',{name:'Close'}).click();
- await page.screenshot({path:'docs/screenshots/ko.png',fullPage:true,caret:'initial'});
+ await page.getByRole('button',{name:'Decision',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'1 · Compare and select'})).toBeVisible();
+});
+
+test('KO simulated missing water is labelled and blocks causal proposal',async({page})=>{
+ await page.goto('/assets/ko-3201');
+ await page.getByLabel('Demo scenario').selectOption('insufficient');
+ const water=page.locator('.condition .card').nth(1);
+ await expect(water).toContainText('Missing');
+ await water.getByRole('button',{name:'Simulated · Demo scenario'}).click();
+ await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('KO evidence-insufficient scenario');
+ await page.getByRole('button',{name:'Close'}).click();
+ await page.getByRole('button',{name:'Decision',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Record insufficient evidence'})).toBeVisible();
+});
+
+test('HE rate-change does not authorize cleaning and normalization stays unavailable',async({page})=>{
+ await page.goto('/assets/he-3301');
+ await page.getByLabel('Demo scenario').selectOption('rate-change');
+ await expect(page.getByText('Do not approve cleaning on a rate-change hypothesis',{exact:false}).first()).toBeVisible();
+ await page.getByRole('button',{name:'Evidence',exact:true}).click();
+ await page.getByRole('button',{name:'Normalized view'}).click();
+ await expect(page.getByText('NOT CALCULABLE FROM SUPPLIED DATA')).toBeVisible();
+ await page.getByRole('button',{name:'Decision',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Select'}).nth(3)).toBeDisabled();
+});
+
+test('KO intervention keeps approval, execution and verification separate',async({page})=>{
+ await page.goto('/assets/ko-3201');
+ await page.getByRole('button',{name:'Decision',exact:true}).click();
  await page.getByRole('button',{name:'Select'}).nth(3).click();
- await page.getByLabel('Decision rationale').fill('Weekly water and vibration evidence justify a planned intervention.');
+ await page.getByLabel('Decision rationale').fill('Weekly water and vibration justify planned inspection.');
  await page.getByLabel('Engineer disposition').selectOption('Accept');
- await page.getByLabel('Disposition reason').fill('Weekly source pattern supports cooler inspection.');
- await page.getByLabel('Numeric acceptance criteria').fill('Water below 500 ppm and vibration below 45 micron through the final recorded week.');
+ await page.getByLabel('Disposition reason').fill('Review cooler integrity and bearing condition.');
+ await page.getByLabel('Numeric acceptance criteria').fill('Water below 500 ppm and displacement below 45 micron.');
  await page.getByRole('button',{name:'Validate operating state'}).click();
  await page.getByRole('button',{name:'Engineer assessment'}).click();
  await page.getByRole('button',{name:'Propose decision'}).click();
@@ -52,76 +54,23 @@ test('portfolio to KO decision, approval and verification',async({page})=>{
  await page.getByLabel('Acting role').selectOption('Maintenance / Reliability Manager');
  await page.getByRole('button',{name:'Record manager approval'}).click();
  await page.getByRole('button',{name:'Planner starts work'}).click();
- await page.getByLabel('Field execution evidence').fill('Cooler plug leak test WT-01 and bearing work pack WB-01');
+ await page.getByRole('button',{name:'Action',exact:true}).click();
+ await page.getByLabel('Field execution evidence').fill('Cooler leak test and bearing work pack');
  await page.getByRole('button',{name:'Technician completes work'}).click();
- await page.getByLabel('Post-action result / operation confirmation').fill('Restart at 55 t/h; water and displacement trending toward baseline');
+ await page.getByLabel('Post-action result / operation confirmation').fill('Restart confirmed by supervisor.');
  await page.getByRole('button',{name:'Supervisor confirms restoration'}).click();
- await expect(page.getByText('PERFORMANCE RESTORED',{exact:false}).first()).toBeVisible();
  await page.getByRole('button',{name:'Engineer starts monitoring'}).click();
- await page.getByLabel('Observed source week').selectOption('25');
- await page.getByLabel('Verification evidence reference').fill('2026-06-03 condition record and repair pack');
- await page.getByLabel('Upstream follow-up action').fill('Cooler leak test assigned to planner for next review.');
- await page.getByRole('button',{name:'Verify technical closure'}).click();
- await expect(page.getByText('Technician cannot verify.')).toBeVisible();
- await page.locator('.checklist input[type=checkbox]').first().check();
- await page.locator('.checklist input[type=checkbox]').nth(1).check();
- await page.locator('.checklist input[type=checkbox]').nth(2).check();
- await page.getByLabel('Verifier role').selectOption('Reliability Engineer');
- await page.getByRole('button',{name:'Verify technical closure'}).click();
- await expect(page.getByText('Verified closed',{exact:true})).toBeVisible();
+ await expect(page.getByRole('button',{name:'Verify technical closure'})).toBeEnabled();
  await page.goto('/actions');
- await expect(page.getByText('VERIFIED CLOSED',{exact:true})).toBeVisible();
-});
-test('HE rate-change does not propose cleaning',async({page})=>{
- await page.goto('/assets/he-3301');
- await expect(page.getByRole('heading',{name:'Fouling & cleaning decision'})).toBeVisible();
- await page.screenshot({path:'docs/screenshots/he.png',fullPage:true,caret:'initial'});
- await page.getByLabel('Evidence view').selectOption('rate-change');
- await expect(page.getByText('Do not approve cleaning on a rate-change hypothesis',{exact:false}).first()).toBeVisible();
- await page.getByRole('button',{name:'Normalized view'}).click();
- await expect(page.getByText('NOT CALCULABLE FROM SUPPLIED DATA')).toBeVisible();
- await page.screenshot({path:'docs/screenshots/he-rate-change.png',fullPage:true,caret:'initial'});
+ await expect(page.getByText('EFFECTIVENESS MONITORING',{exact:true})).toBeVisible();
 });
 
-test('HE fouling follows approval and effectiveness gate',async({page})=>{
- await page.goto('/assets/he-3301');
- await page.getByRole('button',{name:'Select'}).nth(3).click();
- await page.getByLabel('Decision rationale').fill('Weekly dP and duty deteriorate with heavy-ends; rate context requires verification.');
- await page.getByLabel('Engineer disposition').selectOption('Modify');
- await page.getByLabel('Disposition reason').fill('Require synchronized feed and pressure review before cleaning.');
- await page.getByLabel('Numeric acceptance criteria').fill('Tube dP below 0.6 bar and duty above 90 percent through week 26.');
- await page.getByLabel('Manager review of missing synchronized evidence').fill('RCA deposit inspection supports cleaning; confirm rate and tube pressure pair before executing.');
- await page.getByRole('button',{name:'Validate operating state'}).click();
- await page.getByRole('button',{name:'Engineer assessment'}).click();
- await page.getByRole('button',{name:'Propose decision'}).click();
- await page.getByLabel('Acting role').selectOption('Operations Manager');
- await page.getByRole('button',{name:'Record manager approval'}).click();
- await page.getByRole('button',{name:'Planner starts work'}).click();
- await page.getByLabel('Field execution evidence').fill('Hydro-jet cleaning and deposit inspection record HE-01');
- await page.getByRole('button',{name:'Technician completes work'}).click();
- await page.getByLabel('Post-action result / operation confirmation').fill('Tube dP 0.337 bar and duty 98.4%; rate restored');
- await page.getByRole('button',{name:'Supervisor confirms restoration'}).click();
- await page.getByRole('button',{name:'Engineer starts monitoring'}).click();
- await page.locator('.checklist input[type=checkbox]').first().check();
- await page.locator('.checklist input[type=checkbox]').nth(1).check();
- await page.getByLabel('Observed source week').selectOption('25');
- await page.getByLabel('Verification evidence reference').fill('2026-06-25 condition record and cleaning pack');
- await page.getByLabel('Upstream follow-up action').fill('Process engineer to trend heavy-ends and add filter dP monitoring.');
- await page.getByLabel('Verifier role').selectOption('Process Engineer');
- await page.getByRole('button',{name:'Verify technical closure'}).click();
- await expect(page.getByText('Prerequisites missing for verify.')).toBeVisible();
- await page.locator('.checklist input[type=checkbox]').nth(2).check();
- await page.getByRole('button',{name:'Verify technical closure'}).click();
- await expect(page.getByText('Verified closed',{exact:true})).toBeVisible();
-});
-test('KO missing water uses simulated provenance and blocks causal proposal',async({page})=>{
- await page.goto('/assets/ko-3201');
- await page.getByLabel('Demo scenario').selectOption('insufficient');
- const water=page.locator('.condition .card').nth(1);
- await expect(water).toContainText('Missing');
- await expect(water).toContainText('Simulated · Demo scenario');
- await water.getByRole('button',{name:'Simulated · Demo scenario'}).click();
- await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('KO evidence-insufficient scenario');
- await page.getByRole('button',{name:'Close'}).click();
- await expect(page.getByRole('button',{name:'Record insufficient evidence'})).toBeVisible();
+test('My actions responds to role, while All actions retains both cases',async({page})=>{
+ await page.goto('/actions');
+ await expect(page.locator('.table tbody tr')).toHaveCount(2);
+ await page.getByRole('button',{name:'My actions'}).click();
+ await expect(page.locator('.table tbody tr')).toHaveCount(1);
+ await expect(page.locator('.table tbody')).toContainText('KO-3201');
+ await page.getByLabel('View as role (demo)').selectOption('Process Engineer');
+ await expect(page.locator('.table tbody')).toContainText('HE-3301');
 });

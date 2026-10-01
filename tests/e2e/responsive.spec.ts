@@ -9,5 +9,5 @@ test('mobile workspaces remain readable without page-wide horizontal overflow', 
     expect(width, `horizontal overflow on ${route}`).toBeLessThanOrEqual(390);
   }
   await page.goto('/');
-  await page.screenshot({path: 'docs/screenshots/portfolio-mobile.png', fullPage: true});
+  await page.screenshot({path: 'docs/screenshots/redesign/portfolio-mobile.png', fullPage: true});
 });
