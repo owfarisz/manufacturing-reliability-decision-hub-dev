@@ -17,7 +17,9 @@ Accessed 1 October 2026.
 | W3C WAI accessibility | https://www.w3.org/WAI/fundamentals/accessibility-principles/ | Keyboard, contrast and non-color state cues | Adopted visible focus, text state labels and reduced motion. |
 | Atlas Copco compressor principle | https://www.atlascopco.com/en-ie/compressors/wiki/compressed-air-articles/centrifugal-compressor | Representative compressor anatomy | Informed original generic SVG; no claim of exact KO geometry. |
 | Alfa Laval shell-and-tube overview | https://www.alfalaval.com/products/heat-transfer/tubular-heat-exchangers/process-shell-and-tube-heat-exchangers/process-shell-and-tube-heat-exchangers/ | Representative exchanger anatomy | Informed original generic SVG; no claim of exact HE geometry. |
+| Three.js scene and renderer | https://threejs.org/manual/pages/creating-a-scene.html | Procedural equipment model rendering | Adopted scene, camera and mesh composition for generic 3D equipment. |
+| Three.js resource disposal | https://threejs.org/manual/pages/how-to-dispose-of-objects.html | 3D lifecycle cleanup | Geometry, material and renderer resources are released when the view unmounts. |
 
 All case claims come from the supplied local files.
 
-The redesign uses a deep navy industrial base, neutral off-white text and restrained warm yellow influenced by the supplied brand booklet and the user's palette direction. These are approximate interface colors, not official brand codes. Red marks recorded breach or critical state; amber marks attention or uncertainty; green marks supported or recovered state. The detailed reference-by-reference research gate is in `docs/ui-reference-audit.md`.
+The current staging palette is sampled from the user's supplied six-swatch image: `#263F77`, `#315A96`, `#4076B4`, `#5FB6E6`, `#8FC5EA`, and `#E0DE50`, on a near-white base. Red remains reserved for recorded breach or critical state. The detailed reference-by-reference research gate is in `docs/ui-reference-audit.md`.

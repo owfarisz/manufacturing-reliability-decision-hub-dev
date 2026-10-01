@@ -74,3 +74,30 @@ test('My actions responds to role, while All actions retains both cases',async({
  await page.getByLabel('View as role (demo)').selectOption('Process Engineer');
  await expect(page.locator('.table tbody')).toContainText('HE-3301');
 });
+
+test('3D equipment rotates and pins reveal sourced readings',async({page})=>{
+ await page.goto('/assets/ko-3201');
+ const stage=page.locator('.machine-stage');
+ await expect(stage).toHaveAttribute('data-ready','true');
+ const pin=stage.getByRole('button',{name:/DE radial displacement/});
+ await pin.hover();
+ await expect(stage.getByRole('tooltip')).toContainText('DE radial displacement');
+ await expect(stage.getByRole('tooltip')).toContainText('micron');
+ const before=await pin.boundingBox();
+ const canvas=stage.locator('canvas');
+ const box=await canvas.boundingBox();
+ if(!box||!before)throw new Error('3D canvas or evidence pin is missing');
+ await page.mouse.move(box.x+box.width*.48,box.y+box.height*.55);
+ await page.mouse.down();
+ await page.mouse.move(box.x+box.width*.72,box.y+box.height*.55,{steps:8});
+ await page.mouse.up();
+ const after=await pin.boundingBox();
+ expect(after?.x).not.toBe(before.x);
+ await stage.getByRole('button',{name:'Reset 3D view'}).click();
+});
+
+test('Review decision scrolls the opened panel into view',async({page})=>{
+ await page.goto('/assets/he-3301');
+ await page.getByRole('button',{name:'Review decision'}).click();
+ await expect(page.getByRole('heading',{name:'1 · Compare and select'})).toBeInViewport();
+});

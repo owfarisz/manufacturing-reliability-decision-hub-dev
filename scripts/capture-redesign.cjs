@@ -16,10 +16,18 @@ const path=require('path');
  ];
  for(const [name,route,mode] of shots){
   await page.goto('http://127.0.0.1:3100'+route);
+  if(route.startsWith('/assets/'))await page.locator('.machine-stage').waitFor({state:'visible'});
+  if(route.startsWith('/assets/'))await page.locator('.machine-stage[data-ready="true"]').waitFor({state:'visible'});
   if(mode==='Decision')await page.getByRole('button',{name:'Decision',exact:true}).click();
   if(mode==='rate-change')await page.getByLabel('Demo scenario').selectOption('rate-change');
   await page.screenshot({path:path.join(out,name+'.png'),fullPage:false,animations:'disabled'});
   console.log(name,await page.evaluate(()=>({width:document.documentElement.scrollWidth,height:document.documentElement.scrollHeight})));
  }
+ await page.goto('http://127.0.0.1:3100/assets/ko-3201');
+ await page.locator('.machine-stage[data-ready="true"]').waitFor({state:'visible'});
+ await page.locator('.machine-stage .hotspot').first().hover();
+ await page.screenshot({path:path.join(out,'ko-pin-hover.png'),fullPage:false,animations:'disabled'});
+ await page.locator('.machine-stage').getByRole('button',{name:'Rotate model right'}).click();
+ await page.screenshot({path:path.join(out,'ko-rotated.png'),fullPage:false,animations:'disabled'});
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});
