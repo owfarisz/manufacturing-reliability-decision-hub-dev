@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures';
 test('weekly charts render all sourced series immediately',async({page})=>{
  await page.goto('/assets/ko-3201');
  await expect(page.locator('.recharts-line-curve')).toHaveCount(1);

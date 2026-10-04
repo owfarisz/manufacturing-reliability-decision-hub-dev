@@ -1,7 +1,7 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './fixtures';
 
 test('portfolio opens sourced KO evidence and decision',async({page})=>{
- await page.goto('/');
+ await page.goto('/dashboard');
  await expect(page.getByRole('heading',{name:'What needs a decision now'})).toBeVisible();
  await page.getByRole('button',{name:'RCA source'}).first().click();
  await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('Slides 2-11');
@@ -28,7 +28,8 @@ test('HE rate-change does not authorize cleaning and normalization stays unavail
  await expect(page.getByText('Do not approve cleaning on a rate-change hypothesis',{exact:false}).first()).toBeVisible();
  await page.getByRole('button',{name:'Evidence',exact:true}).click();
  await page.getByRole('button',{name:'Normalized view'}).click();
- await expect(page.getByText('NOT CALCULABLE FROM SUPPLIED DATA')).toBeVisible();
+ await expect(page.getByText('RAW SOURCE VIEW')).toBeVisible();
+ await expect(page.getByRole('heading',{name:'Rate-normalized dP and duty'})).toBeVisible();
  await page.getByRole('button',{name:'Decision',exact:true}).click();
  await expect(page.getByRole('button',{name:'Select'}).nth(3)).toBeDisabled();
 });
@@ -53,6 +54,7 @@ test('KO intervention keeps approval, execution and verification separate',async
  await page.getByRole('button',{name:'Technician completes work'}).click();
  await page.getByLabel('Post-action result / operation confirmation').fill('Restart confirmed by supervisor.');
  await page.getByRole('button',{name:'Supervisor confirms restoration'}).click();
+ await page.getByRole('button',{name:'Verification',exact:true}).click();
  await page.getByRole('button',{name:'Engineer starts monitoring'}).click();
  await expect(page.getByRole('button',{name:'Verify technical closure'})).toBeEnabled();
  await page.goto('/actions');
@@ -65,7 +67,7 @@ test('My actions responds to role, while All actions retains both cases',async({
  await page.getByRole('button',{name:'My actions'}).click();
  await expect(page.locator('.table tbody tr')).toHaveCount(1);
  await expect(page.locator('.table tbody')).toContainText('KO-3201');
- await page.getByLabel('View as role (demo)').selectOption('Process Engineer');
+ await page.getByRole('button',{name:'All actions'}).click();
  await expect(page.locator('.table tbody')).toContainText('HE-3301');
 });
 
