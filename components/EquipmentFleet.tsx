@@ -1,60 +1,37 @@
 'use client';
 
-import {useState,type CSSProperties,type PointerEvent} from 'react';
+import {useEffect,useRef,useState} from 'react';
+import * as THREE from 'three';
 
 type Tone='focus'|'context';
+const palette={navy:0x152b3b,steel:0x758892,steelDark:0x40525d,steelLight:0xb3c1c6,blue:0x1686b9,blueDark:0x084b78,yellow:0xe6d954,pipe:0x527582};
 
-function Pipe({d}:{d:string}){
- return <g aria-hidden="true">
-  <path d={d} fill="none" stroke="#07151f" strokeWidth="20" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d={d} fill="none" stroke="#426574" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round"/>
-  <path d={d} fill="none" stroke="#a5c3ca" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" opacity=".62"/>
- </g>;
-}
-
-function Base({x,y,w=150}:{x:number;y:number;w?:number}){
- return <g aria-hidden="true"><path d={`M${x} ${y}h${w}l26 18H${x+26}z`} fill="#07151f"/><path d={`M${x+9} ${y-5}h${w-9}l24 17H${x+33}z`} fill="#355563"/><path d={`M${x+9} ${y-5}l24 17v9L${x+9} ${y+4}z`} fill="#1c3543"/></g>;
-}
-
-function Pump({x,y,tone}:{x:number;y:number;tone:Tone}){
- const focus=tone==='focus'; const body=focus?'#1686b9':'#71818a'; const side=focus?'#07517f':'#4b5961'; const metal=focus?'#e6d954':'#aeb9bd';
- return <g transform={`translate(${x} ${y})`}><title>PU-2101B feed charge pump, mechanical seal leakage</title><Base x={-28} y={72}/><ellipse cx="36" cy="48" rx="42" ry="42" fill={side}/><path d="M-6 48c0-28 18-47 43-47 29 0 49 21 49 49 0 24-18 43-42 43H3V75h43c11 0 20-10 20-24 0-16-12-30-30-30-17 0-27 12-27 27z" fill={body}/><ellipse cx="36" cy="48" rx="17" ry="17" fill="#0b2634"/><circle cx="36" cy="48" r="7" fill={metal}/><path d="M73 49h28" stroke="#0c1d27" strokeWidth="17"/><path d="M73 46h28" stroke={metal} strokeWidth="7"/><rect x="99" y="24" width="80" height="49" rx="13" fill={body}/><ellipse cx="179" cy="48" rx="11" ry="24" fill={side}/><path d="M111 25v47m15-47v47m15-47v47m15-47v47" stroke="#e9f4f4" strokeWidth="3" opacity=".25"/><path d="M-2 21V2h28v13" fill="none" stroke={metal} strokeWidth="10" strokeLinecap="round"/><path d="M12 89v17m138-32v32" stroke={metal} strokeWidth="9"/></g>;
-}
-
-function Compressor({x,y,tone}:{x:number;y:number;tone:Tone}){
- const focus=tone==='focus'; const body=focus?'#1686b9':'#74848d'; const side=focus?'#0a4574':'#4a5962'; const metal=focus?'#e6d954':'#b3bdc1';
- return <g transform={`translate(${x} ${y})`}><title>KO-3201 cracked-gas compressor, bearing distress and radial vibration trip</title><Base x={-36} y={76} w={184}/><path d="M-9 68V27h31l16-18h97l18 18h27v41l-24 19H19z" fill={body}/><path d="M-9 68V27h31l16-18v60H19z" fill={side}/><ellipse cx="1" cy="48" rx="19" ry="25" fill={metal}/><ellipse cx="1" cy="48" rx="8" ry="12" fill="#0a2433"/><path d="M52 11v73m28-75v77m28-77v77m28-75v73" stroke="#edf7f6" strokeWidth="4" opacity=".26"/><circle cx="100" cy="48" r="17" fill="none" stroke="#edf7f6" strokeWidth="3" opacity=".55"/><path d="M43 11V-10h23V10m79 18V-2h23v30" fill="none" stroke={metal} strokeWidth="10" strokeLinecap="round"/><path d="M38 87v21m87-21v21" stroke={metal} strokeWidth="9"/></g>;
-}
-
-function MotorPump({x,y,tone}:{x:number;y:number;tone:Tone}){
- const focus=tone==='focus'; const body=focus?'#1686b9':'#72818a'; const side=focus?'#0a4c78':'#46545d'; const metal=focus?'#e6d954':'#aeb9bd';
- return <g transform={`translate(${x} ${y})`}><title>PM-4405B cooling-water pump, motor bearing overheating</title><Base x={-26} y={72}/><ellipse cx="28" cy="48" rx="39" ry="39" fill={side}/><path d="M-7 49C-7 20 10 1 34 1c28 0 46 20 46 47 0 24-16 44-39 44H3V72h39c11 0 19-10 19-23 0-15-10-28-27-28-15 0-24 11-24 27z" fill={body}/><circle cx="28" cy="48" r="17" fill="#0b2634"/><circle cx="28" cy="48" r="6" fill={metal}/><path d="M68 48h27" stroke="#0b1d27" strokeWidth="18"/><path d="M68 45h27" stroke={metal} strokeWidth="7"/><rect x="94" y="20" width="89" height="55" rx="14" fill={body}/><ellipse cx="183" cy="48" rx="12" ry="27" fill={side}/><path d="M107 21v52m16-52v52m16-52v52m16-52v52" stroke="#eff8f7" strokeWidth="3" opacity=".25"/><path d="M-1 19V0h26v13" fill="none" stroke={metal} strokeWidth="10" strokeLinecap="round"/><path d="M7 88v18m143-31v31" stroke={metal} strokeWidth="9"/></g>;
-}
-
-function Exchanger({x,y,tone}:{x:number;y:number;tone:Tone}){
- const focus=tone==='focus'; const shell=focus?'#1686b9':'#798991'; const shade=focus?'#0a4d79':'#4a5962'; const metal=focus?'#e6d954':'#b7c0c3';
- return <g transform={`translate(${x} ${y})`}><title>HE-3301 feed effluent exchanger, tube fouling and duty loss</title><Base x={-20} y={81} w={192}/><path d="M11 21h142c19 0 34 16 34 36s-15 36-34 36H11c-14 0-25-16-25-36s11-36 25-36z" fill={shell}/><path d="M11 21h142c19 0 34 16 34 36s-15 36-34 36H11z" fill={shade} opacity=".48"/><ellipse cx="11" cy="57" rx="18" ry="36" fill={metal}/><ellipse cx="153" cy="57" rx="18" ry="36" fill={metal}/><path d="M34 22v70m28-70v70m55-70v70m27-70v70" stroke="#eff8f8" strokeWidth="3" opacity=".28"/><path d="M44 21V-4h25v25m69 72v27h25V93m0-72V-1h25v22" fill="none" stroke={metal} strokeWidth="11" strokeLinecap="round"/><path d="M30 94v25m108-25v25" stroke={metal} strokeWidth="9"/></g>;
-}
-
-function Blower({x,y,tone}:{x:number;y:number;tone:Tone}){
- const focus=tone==='focus'; const body=focus?'#1686b9':'#718089'; const side=focus?'#084b78':'#475660'; const metal=focus?'#e6d954':'#b5bec2';
- return <g transform={`translate(${x} ${y})`}><title>BL-5702 product blower, coupling misalignment and high vibration</title><Base x={-30} y={75} w={180}/><path d="M-3 83V28C-3 7 14-10 38-10c29 0 51 22 51 52 0 24-17 43-42 43z" fill={body}/><circle cx="38" cy="41" r="30" fill="#0a2736" opacity=".68"/><path d="M38 12c9 15 9 35 0 59M13 27c16 6 29 19 39 37M50 13C36 23 25 38 19 57" stroke={metal} strokeWidth="6" strokeLinecap="round"/><path d="M76 27h31v22H86m-10 35h31V62H86" fill="none" stroke={metal} strokeWidth="11" strokeLinecap="round"/><path d="M106 49h23" stroke="#0b1d27" strokeWidth="18"/><path d="M106 46h23" stroke={metal} strokeWidth="7"/><rect x="127" y="21" width="76" height="54" rx="13" fill={body}/><ellipse cx="203" cy="48" rx="11" ry="26" fill={side}/><path d="M140 22v51m16-51v51m16-51v51m16-51v51" stroke="#eef8f8" strokeWidth="3" opacity=".25"/><path d="M12 84v20m146-28v28" stroke={metal} strokeWidth="9"/></g>;
-}
-
-function PlantScene(){
- return <svg className="plant-svg" viewBox="0 0 1100 400" role="img" aria-label="Connected equipment plant showing five equipment trains, with the compressor and exchanger highlighted"><defs><linearGradient id="plant-floor" x1="0" x2="1"><stop stopColor="#183746"/><stop offset=".5" stopColor="#254e5d"/><stop offset="1" stopColor="#102633"/></linearGradient><linearGradient id="plant-sky" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#2c5968"/><stop offset="1" stopColor="#102632"/></linearGradient><filter id="plant-glow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><rect width="1100" height="400" fill="url(#plant-sky)"/><path d="M60 250 834 250l210 108H276z" fill="url(#plant-floor)"/><path d="M60 250 834 250l210 108" fill="none" stroke="#8bb5c1" strokeWidth="2" opacity=".35"/><path d="M276 358 1044 358" stroke="#071922" strokeWidth="10" opacity=".45"/>
- <g opacity=".36" stroke="#8fc0c8" fill="none"><path d="M100 238 300 342M260 238l200 104M420 238l200 104M580 238l200 104M740 238l200 104"/><path d="M180 278h760M245 314h760"/></g>
- <Pipe d="M105 189H226v-32h62M368 157h74v30h60M587 187h65v-40h54M848 147h56v41h63"/>
- <g filter="url(#plant-glow)"><circle cx="257" cy="157" r="8" fill="#e6d954"/><circle cx="717" cy="147" r="8" fill="#e6d954"/></g>
- <Pump x={80} y={155} tone="context"/><Compressor x={230} y={136} tone="focus"/><MotorPump x={445} y={155} tone="context"/><Exchanger x={635} y={130} tone="focus"/><Blower x={860} y={151} tone="context"/>
- <g aria-hidden="true" opacity=".8"><path d="M110 250v-42m218 42v-48m228 48v-38m223 38v-42m218 42v-39" stroke="#132c39" strokeWidth="12"/><path d="M110 208v42m218-48v48m228-38v38m223-42v42m218-39v39" stroke="#8baeb5" strokeWidth="3"/></g>
- </svg>;
-}
+function material(color:number,roughness=.3){return new THREE.MeshPhysicalMaterial({color,metalness:.7,roughness,clearcoat:.35});}
+function mesh(group:THREE.Group,geometry:THREE.BufferGeometry,color:number,pos:[number,number,number],rot:[number,number,number]=[0,0,0]){const item=new THREE.Mesh(geometry,material(color));item.position.set(...pos);item.rotation.set(...rot);item.castShadow=true;item.receiveShadow=true;group.add(item);return item;}
+function cylinder(group:THREE.Group,r:number,l:number,color:number,pos:[number,number,number],rot:[number,number,number]=[0,0,Math.PI/2]){return mesh(group,new THREE.CylinderGeometry(r,r,l,32),color,pos,rot);}
+function tube(group:THREE.Group,points:[number,number,number][],radius=.15,color=palette.pipe){const curve=new THREE.CatmullRomCurve3(points.map(point=>new THREE.Vector3(...point)));return mesh(group,new THREE.TubeGeometry(curve,48,radius,10,false),color,[0,0,0]);}
+function colors(tone:Tone){return tone==='focus'?{body:palette.blue,side:palette.blueDark,accent:palette.yellow}:{body:palette.steel,side:palette.steelDark,accent:palette.steelLight};}
+function base(group:THREE.Group,x:number,width=3.1){mesh(group,new THREE.BoxGeometry(width,.22,2.2),palette.navy,[x,-1.18,0]);for(const dx of [-width*.36,width*.36])for(const z of [-.75,.75])mesh(group,new THREE.BoxGeometry(.25,.45,.25),palette.steelDark,[x+dx,-1.5,z]);}
+function pump(group:THREE.Group,x:number,tone:Tone){const c=colors(tone);base(group,x);cylinder(group,.86,.58,c.side,[x-.9,-.32,0],[0,Math.PI/2,0]);mesh(group,new THREE.SphereGeometry(.86,28,18),c.body,[x-.58,-.32,0]);cylinder(group,.28,.95,c.accent,[x+.34,-.32,0]);cylinder(group,.56,1.55,c.body,[x+1.5,-.32,0]);for(const dx of [1.05,1.45,1.92])mesh(group,new THREE.TorusGeometry(.57,.028,8,32),c.accent,[x+dx,-.32,0],[0,Math.PI/2,0]);tube(group,[[x-.58,.34,0],[x-.58,.96,0],[x-.1,.96,0]],.15,c.accent);}
+function compressor(group:THREE.Group,x:number,tone:Tone){const c=colors(tone);base(group,x,3.6);cylinder(group,.7,1.15,c.side,[x-1.2,-.24,0]);cylinder(group,.96,2.5,c.body,[x+.18,-.24,0]);for(const dx of [-.8,-.05,.73])mesh(group,new THREE.TorusGeometry(.97,.04,8,36),c.accent,[x+dx,-.24,0],[0,Math.PI/2,0]);cylinder(group,.58,.85,c.body,[x+1.74,-.24,0]);mesh(group,new THREE.BoxGeometry(.38,.72,.9),c.side,[x+2.23,-.24,0]);tube(group,[[x-1.1,.28,.76],[x-1.1,.98,.76],[x-.48,1.12,.76]],.09,c.accent);tube(group,[[x+1.42,-.66,.76],[x+1.84,-.66,.76],[x+1.84,.24,.76]],.08,c.accent);}
+function exchanger(group:THREE.Group,x:number,tone:Tone){const c=colors(tone);base(group,x,4.4);cylinder(group,1.02,3.8,c.body,[x,-.18,0]);for(const dx of [-1.9,1.9]){cylinder(group,1.08,.28,c.side,[x+dx,-.18,0]);mesh(group,new THREE.TorusGeometry(1.07,.05,8,36),c.accent,[x+dx+(dx<0?-.15:.15),-.18,0],[0,Math.PI/2,0]);}for(const dx of [-1.25,-.62,0,.62,1.25])mesh(group,new THREE.TorusGeometry(1.03,.025,8,32),c.accent,[x+dx,-.18,0],[0,Math.PI/2,0]);tube(group,[[x-1.2,.76,0],[x-1.2,1.45,0],[x-.55,1.45,0]],.18,c.accent);tube(group,[[x+1.25,-1.02,0],[x+1.25,-1.32,.9],[x+1.85,-1.32,.9]],.15,c.accent);}
+function blower(group:THREE.Group,x:number,tone:Tone){const c=colors(tone);base(group,x);mesh(group,new THREE.SphereGeometry(.9,28,18),c.body,[x-.7,-.28,0]);cylinder(group,.62,.56,c.side,[x-1.22,-.28,0]);for(let i=0;i<5;i++){const blade=mesh(group,new THREE.BoxGeometry(.12,.62,.2),c.accent,[x-.7,-.28,.02]);blade.rotation.set(0,0,i*Math.PI/2.5);blade.position.x=x-.7+Math.cos(i*Math.PI/2.5)*.3;blade.position.y=-.28+Math.sin(i*Math.PI/2.5)*.3;}cylinder(group,.26,.98,c.accent,[x+.25,-.28,0]);cylinder(group,.55,1.55,c.body,[x+1.42,-.28,0]);tube(group,[[x-.72,.3,0],[x-.72,.95,0],[x-.15,.95,0]],.15,c.accent);}
+function buildPlant(){const plant=new THREE.Group();
+ const floor=new THREE.Mesh(new THREE.BoxGeometry(24,.28,7.5),material(0x173542,.44));floor.position.y=-1.85;floor.receiveShadow=true;plant.add(floor);
+ for(const z of [-2.7,0,2.7]){const rail=new THREE.Mesh(new THREE.BoxGeometry(22,.05,.06),material(0x5e8996));rail.position.set(0,-1.68,z);plant.add(rail);}
+ pump(plant,-8,'context'); compressor(plant,-4,'focus'); pump(plant,0,'context'); exchanger(plant,4,'focus'); blower(plant,8,'context');
+ tube(plant,[[-5.6,-.32,0],[-5.2,-.32,0],[-5.2,.45,0],[-2.65,.45,0]],.2,palette.pipe);
+ tube(plant,[[-1.68,-.32,0],[-1.25,-.32,0],[-1.25,.45,0],[-.78,.45,0]],.2,palette.pipe);
+ tube(plant,[[1.7,-.32,0],[2.1,-.32,0],[2.1,.45,0],[2.08,.45,0]],.2,palette.pipe);
+ tube(plant,[[5.92,-.18,0],[6.28,-.18,0],[6.28,.42,0],[6.58,.42,0]],.2,palette.pipe);
+ return plant;}
 
 export function EquipmentFleet(){
- const [dragging,setDragging]=useState(false);
- const [rotation,setRotation]=useState({x:0,y:0});
- const rotate=(event:PointerEvent<HTMLButtonElement>)=>{if(!dragging)return;const box=event.currentTarget.getBoundingClientRect();setRotation({x:Math.max(-34,Math.min(34,(event.clientY-box.top)/box.height*68-34)),y:Math.max(-54,Math.min(54,(event.clientX-box.left)/box.width*108-54))})};
- const style={'--plant-x':`${rotation.x}deg`,'--plant-y':`${rotation.y}deg`} as CSSProperties;
- return <section className="equipment-fleet" aria-labelledby="fleet-title"><div className="fleet-heading"><div><div className="eyebrow">Connected equipment landscape</div><h2 id="fleet-title">Five assets in one decision landscape</h2><p>Drag left or right to inspect each side, then drag up or down to change the viewing height. The coloured compressor and exchanger are the two active investigations.</p></div></div><button type="button" className={'plant-viewport'+(dragging?' dragging':'')} style={style} onPointerDown={event=>{setDragging(true);event.currentTarget.setPointerCapture(event.pointerId)}} onPointerMove={rotate} onPointerUp={()=>setDragging(false)} onPointerCancel={()=>setDragging(false)} aria-label="Drag left or right to view the plant sides, drag up or down to change viewing height"><PlantScene/></button></section>;
+ const mount=useRef<HTMLDivElement>(null);const [failed,setFailed]=useState(false);
+ useEffect(()=>{const host=mount.current;if(!host)return;let renderer:THREE.WebGLRenderer;try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:'high-performance'});}catch{setFailed(true);return;}renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;renderer.domElement.className='plant-canvas';renderer.domElement.setAttribute('aria-hidden','true');host.appendChild(renderer.domElement);
+ const scene=new THREE.Scene();scene.background=new THREE.Color(0x0d2531);const camera=new THREE.PerspectiveCamera(38,1,.1,100);camera.position.set(13,9,20);camera.lookAt(0,-.35,0);const plant=buildPlant();plant.rotation.y=-.42;scene.add(plant);scene.add(new THREE.HemisphereLight(0xdff8ff,0x102c38,2.6));const key=new THREE.DirectionalLight(0xffffff,3.2);key.position.set(-8,15,12);key.castShadow=true;scene.add(key);const cyan=new THREE.DirectionalLight(0x58c9e5,2.1);cyan.position.set(9,5,-12);scene.add(cyan);const warm=new THREE.PointLight(0xe6d954,18,12,2);warm.position.set(0,4,4);scene.add(warm);
+ let width=0,height=0,dragging=false,lastX=0,lastY=0;const draw=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;if(w!==width||h!==height){width=w;height=h;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}renderer.render(scene,camera);};const resize=new ResizeObserver(draw);resize.observe(host);draw();
+ const down=(event:PointerEvent)=>{if(event.button!==0)return;dragging=true;lastX=event.clientX;lastY=event.clientY;renderer.domElement.setPointerCapture(event.pointerId);};const move=(event:PointerEvent)=>{if(!dragging)return;const dx=event.clientX-lastX,dy=event.clientY-lastY;lastX=event.clientX;lastY=event.clientY;plant.rotation.y+=dx*.012;plant.rotation.x=Math.max(-1.15,Math.min(1.15,plant.rotation.x+dy*.009));draw();};const up=()=>{dragging=false;};const wheel=(event:WheelEvent)=>{event.preventDefault();camera.position.multiplyScalar(event.deltaY>0?1.08:.92);camera.position.clampLength(13,32);camera.lookAt(0,-.35,0);draw();};renderer.domElement.addEventListener('pointerdown',down);renderer.domElement.addEventListener('pointermove',move);renderer.domElement.addEventListener('pointerup',up);renderer.domElement.addEventListener('pointercancel',up);renderer.domElement.addEventListener('wheel',wheel,{passive:false});
+ return()=>{resize.disconnect();renderer.domElement.removeEventListener('pointerdown',down);renderer.domElement.removeEventListener('pointermove',move);renderer.domElement.removeEventListener('pointerup',up);renderer.domElement.removeEventListener('pointercancel',up);renderer.domElement.removeEventListener('wheel',wheel);host.replaceChildren();plant.traverse(object=>{if(object instanceof THREE.Mesh){object.geometry.dispose();const materials=Array.isArray(object.material)?object.material:[object.material];materials.forEach(item=>item.dispose());}});renderer.dispose();};},[]);
+ return <section className="equipment-fleet" aria-labelledby="fleet-title"><div className="fleet-heading"><div><div className="eyebrow">Connected equipment landscape</div><h2 id="fleet-title">Five assets in one decision landscape</h2><p>Drag in any direction to rotate the real 3D plant, then scroll to zoom. Only the compressor and exchanger are coloured as active investigations.</p></div></div><div className="plant-webgl" role="group" aria-label="Interactive 3D plant with five connected equipment assets" ref={mount}/>{failed&&<div className="plant-fallback">The interactive 3D view is unavailable in this browser.</div>}</section>;
 }
