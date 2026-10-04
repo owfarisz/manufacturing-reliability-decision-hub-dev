@@ -1,0 +1,10 @@
+.next
+node_modules
+node_modules-broken
+.npm-cache
+playwright-report
+test-results
+*.tsbuildinfo
+docs/source-extracts/
+docs/data-validation.json
+src/generated/fixtures.json
