@@ -493,11 +493,12 @@ body{background:var(--bg);color:var(--text)}
   touch-action: none;
 }
 .plant-viewport.dragging { cursor: grabbing; }
+.plant-viewport.dragging .plant-svg { transition: none; }
 .plant-svg {
   display: block;
   width: 100%;
   min-height: 250px;
-  transform: rotateX(var(--plant-x)) rotateY(var(--plant-y)) scale(.985);
+  transform: rotateX(var(--plant-x)) rotateY(var(--plant-y)) scale(.96);
   transform-style: preserve-3d;
   transform-origin: 50% 54%;
   transition: transform .16s ease-out;
