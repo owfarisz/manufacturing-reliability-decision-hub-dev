@@ -1,4 +1,4 @@
-# KAUSYNC staging requirement trace
+# ROOTSYNC staging requirement trace
 
 This trace covers the Must Have sections of the two source PRDs. The user's later instruction to use only actual source measurements takes precedence over simulated numeric values in the PRDs. A missing source field is shown as missing, rather than filled with a guessed value.
 

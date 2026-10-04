@@ -46,4 +46,4 @@ if(process.argv.includes('--with-sources')){
  assert.equal(explanation,ui.snapshot.explanationHash,'The source explanation deck no longer matches the frozen snapshot');
  console.log('All 17 original source files match the committed snapshot hashes.');
 }
-console.log('KAUSYNC source snapshot verified: 11 workbooks, 5 RCA decks, 380 incidents, 1,440 focus hourly rows, 52 focus weekly rows.');
+console.log('ROOTSYNC source snapshot verified: 11 workbooks, 5 RCA decks, 380 incidents, 1,440 focus hourly rows, 52 focus weekly rows.');

@@ -1,4 +1,4 @@
-# KAUSYNC staging redesign decisions and QA
+# ROOTSYNC staging redesign decisions and QA
 
 Reviewed 1 October 2026. This release changes the existing staging prototype. Production was not used as a target.
 

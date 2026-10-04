@@ -5,7 +5,7 @@ import {Hub} from './Hub';
 import {OnboardingTour,RolePicker,type Role} from './OnboardingTour';
 
 const dashboardRoles:Role[]=['Reliability Engineer','Maintenance Planner'];
-const roleStorageKey='kausync-dashboard-role';
+const roleStorageKey='rootsync-dashboard-role';
 
 export function DevHub({view}:{view:'portfolio'|'ko'|'he'|'actions'}){
  const [role,setRole]=useState<Role|null>(null);

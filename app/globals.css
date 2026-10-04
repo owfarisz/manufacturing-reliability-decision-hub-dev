@@ -210,7 +210,7 @@ input[type=range] { width: 100%; padding: 0; accent-color: var(--navy); }
   .drawer dl { grid-template-columns: 95px 1fr; }
 }
 
-/* KAUSYNC industrial cockpit */
+/* ROOTSYNC industrial cockpit */
 :root{--bg:#091722;--surface:#102331;--surface-soft:#142a39;--line:#2b4251;--text:#f0f5f5;--muted:#a7bac3;--navy:#173548;--navy-hover:#1c4155;--yellow:#f2bd48;--yellow-deep:#f2bd48;--red:#ec6864;--green:#79c9aa;--blue:#7db4d5;--shadow:0 12px 35px #04111a38}
 body{background:var(--bg);color:var(--text);font-size:14px}
 .shell{grid-template-columns:76px minmax(0,1fr)}

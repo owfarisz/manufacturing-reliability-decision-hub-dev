@@ -1,6 +1,6 @@
-# KAUSYNC staging
+# ROOTSYNC staging
 
-KAUSYNC is a static manufacturing intelligence dashboard for the KO-3201 compressor, HE-3301 exchanger, and the recorded incident portfolio. This repository deploys to the separate public staging site at `https://owfarisz.github.io/manufacturing-reliability-decision-hub-staging/`. The production repository and its GitHub Pages deployment are separate.
+ROOTSYNC is a static manufacturing intelligence dashboard for the KO-3201 compressor, HE-3301 exchanger, and the recorded incident portfolio. This repository deploys to the separate public staging site at `https://owfarisz.github.io/manufacturing-reliability-decision-hub-staging/`. The production repository and its GitHub Pages deployment are separate.
 
 ## Frozen source snapshot
 

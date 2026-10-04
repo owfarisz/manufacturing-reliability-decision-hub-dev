@@ -10,3 +10,5 @@ out
 docs/source-extracts/
 docs/data-validation.json
 src/generated/fixtures.json
+
+.vercel
