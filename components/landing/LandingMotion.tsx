@@ -25,6 +25,8 @@ export function LandingMotion(){
   lenis.on('scroll',ScrollTrigger.update);
   const tick=(t:number)=>lenis.raf(t*1000);
   gsap.ticker.add(tick);gsap.ticker.lagSmoothing(0);
+  // Below this width the hero stacks and the demo window sits nearly flat so nothing is cut off
+  const stacked=window.matchMedia('(max-width: 1080px)').matches;
   const ctx=gsap.context(()=>{
    // Hero entrance
    const h1=new SplitText('.lp-hero h1',{type:'lines',mask:'lines'});
@@ -33,7 +35,7 @@ export function LandingMotion(){
     .fromTo('.lp-hero [data-intro]',{autoAlpha:0,y:24},{autoAlpha:1,y:0,duration:.7,stagger:.09},.15)
     .from(h1.lines,{yPercent:110,duration:1,stagger:.12},.25)
     .fromTo('.lp-orbit',{autoAlpha:0,scale:.9,rotate:-12},{autoAlpha:1,scale:1,rotate:0,duration:1.2,ease:'expo.out'},.45)
-    .fromTo('.lp-hero-demo',{autoAlpha:0,y:60,rotationY:-30},{autoAlpha:1,y:0,rotationY:-14,rotationX:6,duration:1.3,ease:'expo.out'},.6)
+    .fromTo('.lp-hero-demo',{autoAlpha:0,y:60,rotationY:stacked?-12:-30},{autoAlpha:1,y:0,rotationY:stacked?-4:-14,rotationX:stacked?2:6,duration:1.3,ease:'expo.out'},.6)
     .fromTo('.lp-chip',{autoAlpha:0,scale:.8},{autoAlpha:1,scale:1,duration:.6,stagger:.12,ease:'back.out(1.6)'},1.1);
    gsap.to('.lp-hero-inner',{yPercent:-10,autoAlpha:.25,ease:'none',scrollTrigger:{trigger:'.lp-hero',start:'top top',end:'bottom top',scrub:true}});
 
@@ -65,16 +67,16 @@ export function LandingMotion(){
    gsap.to('.lp-closing-wrap',{'--glow':1,ease:'none',scrollTrigger:{trigger:'.lp-closing-wrap',start:'top 90%',end:'top 20%',scrub:true}});
    // Hero demo window leans toward the pointer
    const demoCard=document.querySelector<HTMLElement>('.lp-hero-demo'),heroEl=document.querySelector<HTMLElement>('.lp-hero');
-   if(demoCard&&heroEl&&window.matchMedia('(pointer: fine)').matches){
+   if(demoCard&&heroEl&&!stacked&&window.matchMedia('(pointer: fine)').matches){
     const rx=gsap.quickTo(demoCard,'rotationX',{duration:.6,ease:'power3'}),ry=gsap.quickTo(demoCard,'rotationY',{duration:.6,ease:'power3'});
     heroEl.addEventListener('pointermove',e=>{const r=heroEl.getBoundingClientRect();ry(-14+((e.clientX-r.left)/r.width-.5)*14);rx(6-((e.clientY-r.top)/r.height-.5)*10)});
    }
    // Same signal, different cause: the vibrating signal lands first, the fork draws, then each asset slides in and its cause chain pops step by step
    gsap.timeline({scrollTrigger:{trigger:'.lp-same-grid',start:'top 74%'},defaults:{ease:'power3.out'}})
-    .from('.lp-same-signal',{x:-70,opacity:0,duration:.7})
+    .from('.lp-same-signal',{x:stacked?0:-70,y:stacked?40:0,opacity:0,duration:.7})
     .from('.lp-wave g',{scaleY:0,transformOrigin:'50% 50%',duration:1.1,ease:'elastic.out(1.1,.35)'},.2)
     .from('.lp-fork',{clipPath:'inset(0 100% 0 0)',duration:.6,ease:'power2.inOut'},.7)
-    .from('.lp-same-cases article',{x:110,opacity:0,rotate:2,duration:.75,stagger:.28,ease:'back.out(1.5)'},1)
+    .from('.lp-same-cases article',{x:stacked?0:110,y:stacked?50:0,opacity:0,rotate:stacked?0:2,duration:.75,stagger:.28,ease:'back.out(1.5)'},1)
     .from('.lp-same-cases li',{scale:.4,opacity:0,duration:.4,stagger:.11,ease:'back.out(2.2)'},1.35);
 
    const mm=gsap.matchMedia();

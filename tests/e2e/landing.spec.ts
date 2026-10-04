@@ -162,3 +162,37 @@ test('closing statement is fully marked once it is on screen',async({page})=>{
  await expect(closing).toContainText('The goal is not to predict every failure.');
  await expect(closing.locator('mark.lit')).toHaveCount(3,{timeout:15000});
 });
+
+test('phone and tablet hero keeps every element inside the screen and unobstructed',async({browser})=>{
+ for(const [width,height] of [[360,800],[390,844],[768,1024],[820,1180],[1024,768]] as const){
+  const context=await browser.newContext({viewport:{width,height},hasTouch:true,isMobile:true});
+  const page=await context.newPage();
+  await page.goto('/');
+  await expect(page.locator('.lp.lp-ready')).toHaveCount(1);
+  await page.waitForTimeout(2600);
+  const report=await page.evaluate(()=>{
+   const vw=document.documentElement.clientWidth;
+   const box=(sel:string)=>Array.from(document.querySelectorAll(sel)).map(el=>el.getBoundingClientRect());
+   const outside=['.lp-hero h1','.lp-hero-body','.lp-proposed','.lp-hero-demo','.lp-chip','.lp-cta .lp-btn'].flatMap(sel=>box(sel).filter(r=>r.left<-1||r.right>vw+1).map(()=>sel));
+   const demo=box('.lp-hero-demo')[0],proposed=box('.lp-proposed')[0],ticker=box('.lp-ticker')[0];
+   const chipBottom=Math.max(...box('.lp-chip').map(r=>r.bottom));
+   return {outside,demoBelowCredit:demo.top>=proposed.bottom-1,chipsAboveTicker:chipBottom<=ticker.top+1};
+  });
+  expect(report,`hero layout at ${width}x${height}`).toEqual({outside:[],demoBelowCredit:true,chipsAboveTicker:true});
+  await context.close();
+ }
+});
+
+test('phone layout groups the incidents into readable bands',async({browser})=>{
+ const context=await browser.newContext({viewport:{width:390,height:844},hasTouch:true,isMobile:true});
+ const page=await context.newPage();
+ await page.goto('/');
+ const field=page.locator('#problem .lp-field');
+ await expect(field).toHaveClass(/compact/);
+ await field.locator('svg').scrollIntoViewIfNeeded();
+ await expect(field.locator('.lp-field-cap').last()).toBeVisible({timeout:15000});
+ await expect(field.locator('.lp-field-label').first()).toBeVisible();
+ const box=await field.locator('svg').boundingBox();
+ expect(box&&box.width<=390).toBe(true);
+ await context.close();
+});

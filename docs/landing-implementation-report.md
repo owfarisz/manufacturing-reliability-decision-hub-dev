@@ -45,9 +45,13 @@ Dashboard business logic, `ui.json`, the snapshot builder and the source workboo
 - `npm run typecheck` passes.
 - `npm test` passes, 8 tests.
 - `npm run build` passes.
-- `npm run test:e2e` passes, 22 tests, including the pinned scene regrouping on scroll and the reduced-motion fallback.
+- `npm run test:e2e` passes, 24 tests, including the pinned scene regrouping on scroll and the reduced-motion fallback.
 - A GitHub Pages export with a base path passes `npm run verify:export`.
 - No horizontal overflow at 1440×900, 1280×720, 1024×768, 768×1024, 390×844 and 360×800.
+
+## Phone and tablet QA
+
+The page was stepped through from top to bottom with touch emulation at 360×800, 390×844, 768×1024, 820×1180, 1024×768 and 1180×820. A script flagged any text, image or control whose box left the screen, and each viewport was reviewed in screenshots including the settled state of every animated scene and the open menu. Fixes from that pass: the hero stacks below 1080 px with the demo window and readings in normal flow, the 380-dot scene uses a taller banded layout on phones, mechanism chains wrap without dangling connectors, R.O.O.T. scenes grow with their content, and the impact circles sit beside their figures. Two e2e tests keep the hero and the phone dot layout from regressing.
 
 ## Existing tests that were updated
 
@@ -63,5 +67,5 @@ Three dashboard tests were already out of date before this work. They now start 
 - Lighthouse was not run. GSAP and Lenis add to the landing bundle.
 - Two figures in the dot scene come from the local workbook and not from the committed snapshot: the full failure-family distribution, and the fact that 379 distinct tags appear across 380 rows.
 - The two external reference sites were not opened.
-- Motion was checked through scripted scrolling and screenshots in Chrome only, not by hand and not in Safari or Firefox.
+- Device checks used Chrome's touch and viewport emulation. No real phone, iPad, Safari or Firefox was used.
 - The workflow walkthrough rows and the R.O.O.T. scenes are illustrations of the KO-3201 case flow, not recorded workflow data.
