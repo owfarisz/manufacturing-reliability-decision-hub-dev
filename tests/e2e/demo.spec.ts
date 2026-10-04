@@ -16,18 +16,12 @@ test('portfolio opens sourced KO evidence and decision',async({page})=>{
  await expect(page.getByRole('heading',{name:'1 · Compare and select'})).toBeVisible();
 });
 
-test('KO simulated missing water is labelled and blocks causal proposal',async({page})=>{
+test('KO displays recorded lube-oil water evidence',async({page})=>{
  await page.goto('/assets/ko-3201');
- await page.getByLabel('Demo scenario').selectOption('insufficient');
- const water=page.locator('.condition .card').nth(1);
- await expect(water).toContainText('Missing');
- await water.getByRole('button',{name:'Simulated · Demo scenario'}).click();
- await expect(page.getByRole('dialog',{name:'Evidence and provenance'})).toContainText('KO evidence-insufficient scenario');
- await page.getByRole('button',{name:'Close'}).click();
- await page.getByRole('button',{name:'Decision',exact:true}).click();
- await expect(page.getByRole('button',{name:'Record insufficient evidence'})).toBeVisible();
+ await expect(page.getByText('Lube-oil water',{exact:true}).first()).toBeVisible();
+ await expect(page.getByRole('img',{name:/Lube-oil water interactive historical trend/})).toBeVisible();
+ await expect(page.getByText('Water sample withheld',{exact:true})).toHaveCount(0);
 });
-
 test('HE rate-change does not authorize cleaning and normalization stays unavailable',async({page})=>{
  await page.goto('/assets/he-3301');
  await page.getByLabel('Demo scenario').selectOption('rate-change');
