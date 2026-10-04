@@ -12,7 +12,7 @@ Read this document before changing the app. Also read `arahan.md` and every docu
 - Application root: `/Users/owfaris/Documents/lomba/bcc/caliber/new case 2/prototype`
 - Framework: Next.js 16, React 19, TypeScript, Webpack build
 - Package name: `rootsync`
-- Current local branch at handoff: `dev`
+- Current local branch at handoff: `rootsync`
 - Current HEAD: `aed6e52 chore: exclude local build artifacts from vercel uploads`
 - Previous branding commit: `5ba1f8b feat: align rootsync with root strategy`
 - Working tree at handoff: expected clean, verify with `git status --short --branch`
@@ -23,7 +23,7 @@ Configured remotes:
 - `origin`: `https://github.com/owfarisz/manufacturing-reliability-decision-hub.git`
 - `staging`: `https://github.com/owfarisz/manufacturing-reliability-decision-hub-staging.git`
 
-The user explicitly does **not** want the production GitHub repository used for the current ROOTSYNC work. Keep using this existing working copy and Vercel deployment. The user requested that development-facing naming be removed for a jury-facing presentation. The intended next repository/branch name is `rootsync` or a ROOTSYNC-named main branch, but this has **not yet been renamed or pushed**. Confirm the preferred Git branch/remote mapping only if needed, then rename deliberately rather than mixing changes into `origin/main`.
+The user explicitly does **not** want the separate production GitHub repository used for current ROOTSYNC work. The public working repository has been renamed to `owfarisz/rootsync`, its default branch `main` now contains the current ROOTSYNC code, and the local working branch is `rootsync`. Keep using this repository and Vercel deployment. Do not mix changes into `origin/main`.
 
 ## Product goal
 
@@ -227,7 +227,7 @@ Do not create an alternative Vercel domain automatically. The user authorized on
 
 ## Pending work at the time of handoff
 
-The latest user request has not yet been implemented. It has two parts.
+The latest user request is partially complete. The repository identity is now ROOTSYNC. The remaining application-copy cleanup should be completed before a jury review.
 
 ### 1. Remove development-facing language for the jury-facing production experience
 
@@ -278,29 +278,17 @@ Recommended cleanup:
 
 This is a text and local-storage namespace cleanup. It should not change the data model or workflow behavior.
 
-### 2. Rename the working branch / delivery identity
+### 2. Delivery identity, completed
 
-The user said: “do not go to the production repo, keep using this repository, but rename it to main ROOTSYNC.” The intent is to stop presenting the current work as `dev` to the jury.
+The user requested the public working repository be presented as ROOTSYNC instead of the previous development identity. This is now complete:
 
-Safest proposed sequence:
+- GitHub repository: `https://github.com/owfarisz/rootsync`
+- Repository description: `ROOTSYNC reliability decision workspace`
+- GitHub default branch: `main`, updated to commit `798e212`
+- Local working branch: `rootsync`
+- Local remote: `rootsync` → `https://github.com/owfarisz/rootsync.git`
 
-1. Complete the UI copy cleanup and test it.
-2. Rename local `dev` branch to `rootsync`:
-
-   ```bash
-   git branch -m dev rootsync
-   ```
-
-3. Push it to the existing `dev` remote as its `main` branch only if the user wants GitHub updated:
-
-   ```bash
-   git push dev rootsync:main
-   ```
-
-4. Do **not** push to `origin` unless the user explicitly asks to update the old production repository.
-5. Optionally rename the GitHub repository through `gh repo edit` only after confirming, because it changes external repository URLs. This was not performed.
-
-The Vercel deployment is independent of the Git branch and will keep working after local branch rename. Redeploy from this working directory after code cleanup.
+Do **not** push to `origin` unless the user explicitly asks to update the separate original production repository. The Vercel deployment is independent of the Git branch. Redeploy from this working directory after future code changes.
 
 ## Failed or problematic attempts and what to avoid
 
@@ -380,7 +368,7 @@ When browser QA is available, test at least:
 4. Change browser storage naming from `rootsync-demo-v1` to `rootsync-workspace-v1` without breaking normal entry.
 5. Run typecheck and focused browser QA.
 6. Commit with a clear ROOTSYNC production-readiness message.
-7. Rename branch `dev` to `rootsync` locally. Push only to the existing `dev` remote’s `main` branch if requested, never to `origin` without explicit user direction.
+7. Work on the `rootsync` branch and push it to the `rootsync` remote’s `main` branch. Never push to `origin` without explicit user direction.
 8. Deploy to the same Vercel production project and verify `https://rootyapyapcaliber.vercel.app` still returns ROOTSYNC.
 9. For the planned landing page, treat it as an additional route or entry page that leads into the existing workspace. Preserve all current routes and interactive dashboard behavior.
 
