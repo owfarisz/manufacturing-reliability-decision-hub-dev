@@ -328,6 +328,151 @@ body{background:var(--bg);color:var(--text)}
 
 .role-gate{position:fixed;z-index:100;inset:0;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#eaf6fd,#f8fafd 60%,#fdfde6)}.role-card{width:min(760px,100%);padding:32px;border:1px solid #c5dce9;border-radius:20px;background:#fff;box-shadow:0 24px 65px #263f7730}.role-card h1{margin:6px 0;color:#263f77;font-size:32px}.role-card p{max-width:570px;color:#58718a}.role-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}.role-choice{display:grid;gap:5px;padding:15px;border:1px solid #cfe2ee;border-radius:11px;background:#f7fbfe;color:#263f77;text-align:left}.role-choice:hover{border-color:#4076b4;background:#edf8fd;transform:translateY(-1px)}.role-choice span{color:#5d7891;font-size:11px;line-height:1.4}.role-indicator{position:fixed;z-index:29;bottom:18px;left:92px;padding:6px 10px;border:1px solid #bfd9e9;border-radius:999px;background:#fff;color:#54728c;box-shadow:0 4px 14px #263f7720;font-size:11px}.role-indicator strong{color:#263f77}.guide-switch{display:flex;gap:4px;margin:0 70px 12px 0;padding:3px;border:1px solid #c9dce9;border-radius:8px;background:#eff7fc}.guide-switch button{flex:1;padding:5px;border:0;border-radius:5px;background:transparent;color:#55708b;font-size:10px;font-weight:800}.guide-switch button.active{background:#263f77;color:#fff}@media(max-width:760px){.role-grid{grid-template-columns:1fr}.role-card{padding:24px}.role-indicator{right:auto;bottom:14px;left:14px;top:auto}}
 .role-switcher{display:grid;place-items:center;width:34px;height:34px;margin:0 auto 12px;padding:0;border:1px solid #5e7f94;border-radius:50%;background:#1c4155;color:#fff;font-size:10px;font-weight:850;letter-spacing:.04em;box-shadow:0 3px 10px #04111a44}.role-switcher:hover,.role-switcher:focus-visible{border-color:#f2bd48;background:#315a96;color:#f2bd48}.snapshot-indicator{padding-top:10px;border-top:1px solid #49627d}@media(max-width:760px){.sidebar .role-switcher{display:none}}
-/* Portfolio equipment landscape: a connected visual index, not an invented process pipe route. */
-.portfolio-main>.equipment-fleet{margin:22px 0 0}.equipment-fleet{padding:18px 18px 14px}.fleet-heading{display:block}.fleet-heading h2{font-size:18px}.fleet-heading p{font-size:11px}.fleet-heading .fleet-key,.fleet-card-copy,.fleet-detail{display:none}.fleet-connected{grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin-top:12px;align-items:center}.fleet-connected .fleet-card{position:relative;z-index:1;padding:3px;border:0;border-radius:0;background:transparent}.fleet-connected .fleet-card:not(:last-child)::after{position:absolute;z-index:-1;top:61px;left:calc(100% - 11px);width:22px;height:14px;border-top:5px solid #58717e;border-bottom:5px solid #223e4d;background:linear-gradient(90deg,#9dafb5,#526a76);content:""}.fleet-connected .fleet-card.focus:not(:last-child)::after{border-top-color:#3b8db9;background:linear-gradient(90deg,#62c5e2,#285d8b)}.fleet-connected .fleet-model{min-height:120px;border:1px solid transparent;background:transparent;cursor:grab}.fleet-connected .fleet-model:active{cursor:grabbing}.fleet-connected .fleet-model.selected{outline:none}.fleet-connected .fleet-model.selected svg{filter:drop-shadow(0 0 10px #e0de5066)}.fleet-connected .fleet-card.focus .fleet-model{border-color:#447f9d;border-radius:10px;background:radial-gradient(circle at 50% 30%,#21587888,#112b3800 68%)}.fleet-connected .fleet-model svg{height:120px}.fleet-connected .fleet-card.context{opacity:.72}.fleet-connected .fleet-card.context .fleet-model:hover{opacity:1}.fleet-connected .fleet-card.context .fleet-model:hover svg{filter:drop-shadow(0 0 6px #9fb4bc55)}@media(max-width:1120px){.fleet-connected{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.fleet-connected .fleet-card::after{display:none}}@media(max-width:760px){.fleet-connected{grid-template-columns:repeat(2,minmax(0,1fr)}.fleet-connected .fleet-card:last-child{grid-column:auto;max-width:none}.fleet-heading h2{font-size:16px}}
-.equipment-fleet{margin:0;padding:18px 18px 14px;border:1px solid #365467;border-radius:16px;background:radial-gradient(circle at 50% 0,#214358 0,#102735 48%,#0c1c27 100%);box-shadow:var(--shadow);overflow:hidden}.fleet-svg .model-shadow{fill:#020b10;opacity:.58}.fleet-heading{display:block}.fleet-heading h2{margin:4px 0 5px;font-size:18px}.fleet-heading p{max-width:650px;margin:0;color:#b9cad1;font-size:11px}.fleet-grid{display:grid;margin-top:12px}.fleet-model{display:block;width:100%;padding:0;border:0;cursor:grab;perspective:600px}.fleet-model:active{cursor:grabbing}.fleet-model svg{display:block;width:100%;transform:rotateX(var(--fleet-x)) rotateY(var(--fleet-y));transform-origin:center;transition:transform .18s ease}
+
+/* Portfolio equipment landscape: connected visual index, not a real process route. */
+.portfolio-main > .equipment-fleet {
+  margin-top: 22px;
+}
+
+.equipment-fleet {
+  margin: 0;
+  padding: 18px 18px 14px;
+  border: 1px solid #365467;
+  border-radius: 16px;
+  background: radial-gradient(circle at 50% 0, #214358 0, #102735 48%, #0c1c27 100%);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.fleet-svg .model-shadow {
+  fill: #020b10;
+  opacity: .58;
+}
+
+.fleet-heading {
+  display: block;
+}
+
+.fleet-heading h2 {
+  margin: 4px 0 5px;
+  font-size: 18px;
+}
+
+.fleet-heading p {
+  max-width: 650px;
+  margin: 0;
+  color: #b9cad1;
+  font-size: 11px;
+}
+
+.fleet-grid {
+  display: grid;
+  margin-top: 12px;
+}
+
+.fleet-connected {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  align-items: center;
+}
+
+.fleet-connected .fleet-card {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  padding: 3px;
+  border: 0;
+  background: transparent;
+}
+
+.fleet-connected .fleet-card:not(:last-child)::after {
+  position: absolute;
+  z-index: -1;
+  top: 61px;
+  left: calc(100% - 11px);
+  width: 22px;
+  height: 14px;
+  border-top: 5px solid #58717e;
+  border-bottom: 5px solid #223e4d;
+  background: linear-gradient(90deg, #9dafb5, #526a76);
+  content: "";
+}
+
+.fleet-connected .fleet-card.focus:not(:last-child)::after {
+  border-top-color: #3b8db9;
+  background: linear-gradient(90deg, #62c5e2, #285d8b);
+}
+
+.fleet-model {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: grab;
+  perspective: 600px;
+}
+
+.fleet-model:active {
+  cursor: grabbing;
+}
+
+.fleet-model svg {
+  display: block;
+  width: 100%;
+  height: 120px;
+  transform: rotateX(var(--fleet-x)) rotateY(var(--fleet-y));
+  transform-origin: center;
+  transition: transform .18s ease;
+}
+
+.fleet-connected .fleet-model {
+  min-height: 120px;
+}
+
+.fleet-connected .fleet-card.focus .fleet-model {
+  border: 1px solid #447f9d;
+  border-radius: 10px;
+  background: radial-gradient(circle at 50% 30%, #21587888, #112b3800 68%);
+}
+
+.fleet-connected .fleet-model.selected svg {
+  filter: drop-shadow(0 0 10px #e0de5066);
+}
+
+.fleet-connected .fleet-card.context {
+  opacity: .72;
+}
+
+.fleet-connected .fleet-card.context .fleet-model:hover {
+  opacity: 1;
+}
+
+.fleet-connected .fleet-card.context .fleet-model:hover svg {
+  filter: drop-shadow(0 0 6px #9fb4bc55);
+}
+
+@media (max-width: 1120px) {
+  .fleet-connected {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .fleet-connected .fleet-card::after {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .equipment-fleet {
+    padding: 16px;
+  }
+
+  .fleet-heading h2 {
+    font-size: 16px;
+  }
+
+  .fleet-connected {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
