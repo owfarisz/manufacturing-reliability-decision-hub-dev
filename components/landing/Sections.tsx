@@ -40,12 +40,13 @@ export function LandingHero(){
      <Link className="lp-btn primary" href={routes.dashboard}>Launch Live Demo<ArrowUpRight size={17} aria-hidden="true"/></Link>
      <a className="lp-btn ghost" href="#evidence">Explore ROOTSYNC<ArrowDown size={17} aria-hidden="true"/></a>
     </div>
+    <p className="lp-proposed" data-intro><img src={asset('/landing/caliber-logo.png')} alt="CALIBER, Chandra Asri Limitless Innovation and Business Strategy Challenge" width={530} height={275}/><span>Proposed for CALIBER 2026<b>by YAPYAP team</b></span></p>
    </div>
    <div className="lp-hero-visual">
     <Orbit/>
     <Link className="lp-hero-demo" href={routes.dashboard} aria-label="Open the live demo">
      <span className="lp-mock-bar" aria-hidden="true"><i/><i/><i/><span>rootsync / dashboard</span><b>Live demo</b></span>
-     <span className="lp-hero-shots">{['dashboard','ko-3201','he-3301'].map((n,i)=><img key={n} src={asset(`/landing/${n}.jpg`)} alt="" width={1440} height={900} style={css({'--i':i})} fetchPriority={i===0?'high':undefined} loading={i===0?undefined:'lazy'}/>)}</span>
+     <span className="lp-hero-shots">{['dashboard','ko-3201','he-3301','actions'].map((n,i)=><img key={n} src={asset(`/landing/${n}.jpg`)} alt="" width={1440} height={900} style={css({'--i':i})} fetchPriority={i===0?'high':undefined} loading={i===0?undefined:'lazy'}/>)}</span>
      <span className="lp-hero-open">Open the workspace<ArrowUpRight size={15} aria-hidden="true"/></span>
     </Link>
     <ul className="lp-chips" aria-label="Recorded readings at the historical trip week">
@@ -174,6 +175,7 @@ export function LandingFooter(){
    <p className="lp-wordmark"><span className="lp-mark" aria-hidden="true">R</span>ROOTSYNC</p>
    <nav aria-label="Footer">{navItems.map(n=><a key={n.id} href={`#${n.id}`}>{n.label}</a>)}<Link href={routes.dashboard}>Dashboard</Link></nav>
   </div>
-  <p className="lp-source">R.O.O.T. Strategy · CALIBER 2026 · Built on a frozen historical case snapshot. Advisory only. Protective systems remain authoritative.</p>
+  <p className="lp-footer-team"><img src={asset('/landing/caliber-logo.png')} alt="CALIBER, Chandra Asri Limitless Innovation and Business Strategy Challenge" width={530} height={275} loading="lazy"/><span>R.O.O.T. Strategy · a proposal for CALIBER 2026<b>YAPYAP team · Abel Gani · Muhammad Faris Daffa · Adelia Rifani</b></span></p>
+  <p className="lp-source">Built on a frozen historical case snapshot. Advisory only. Protective systems remain authoritative. The CALIBER logo belongs to its owner and is shown to identify the competition.</p>
  </footer>;
 }

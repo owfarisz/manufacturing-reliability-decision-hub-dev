@@ -10,7 +10,7 @@ The landing page introduces the ROOTSYNC workspace to a jury: what problem it an
 
 | Chapter | What the visitor sees |
 | --- | --- |
-| Hero | Particle field that reacts to the pointer, an orbiting R.O.O.T. loop, and a tilted window cycling through three real dashboard views that opens the live demo |
+| Hero | Particle field that reacts to the pointer, an orbiting R.O.O.T. loop, and a tilted window cycling through four real workspace views at 2.5 seconds each that opens the live demo, and the CALIBER logo with the YAPYAP team credit |
 | 01 The record | Three numbers counting up: 380 incidents, 2,261.1 h, US$67.2M |
 | 02 The problem | A pinned scene of 380 dots. Scattered, then one per asset, then stacked by failure family. Followed by one waveform forking into two causes |
 | 03 R.O.O.T. | Four panels travelling sideways while the section is pinned. Each plays a short scene: alerts sorting into a ranked queue, sources feeding one evidence ledger, a decision collecting owner and approval, a reading recovering before the case closes |

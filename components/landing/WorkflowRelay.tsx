@@ -3,7 +3,7 @@ import {useEffect,useRef,useState} from 'react';
 import {AlertTriangle,Check,MousePointer2,Pause,Play} from 'lucide-react';
 import type {WorkflowStep} from '@/content/landing';
 
-const STEP_MS=2800;
+const STEP_MS=1700;
 
 // The eight workflow steps as a relay. A pulse moves from owner to owner and the
 // small screen underneath shows what that person does at that step.

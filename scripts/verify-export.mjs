@@ -9,7 +9,7 @@ for(const page of ['index.html','dashboard/index.html','assets/ko-3201/index.htm
 const landing=readFileSync(new URL('index.html',out),'utf8');
 assert.ok(landing.includes('From fragmented evidence'),'The root page is not the landing page');
 for(const route of ['/dashboard/','/assets/ko-3201/','/assets/he-3301/','/actions/'])assert.ok(landing.includes(`href="${base}${route}"`),`Landing link to ${route} is not prefixed with ${base}`);
-for(const image of ['dashboard','ko-3201','he-3301']){
+for(const image of ['dashboard','ko-3201','he-3301','actions']){
  assert.ok(landing.includes(`src="${base}/landing/${image}.jpg"`),`Preview image ${image} is not prefixed with ${base}`);
  assert.ok(existsSync(new URL(`landing/${image}.jpg`,out)),`Preview image ${image} is missing from the export`);
 }

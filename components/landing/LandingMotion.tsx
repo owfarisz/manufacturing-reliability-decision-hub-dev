@@ -14,6 +14,10 @@ export function LandingMotion(){
   const page=document.querySelector<HTMLElement>('.lp');if(!page)return;
   page.classList.add('lp-ready');
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){page.querySelectorAll('[data-live]').forEach(el=>el.classList.add('live'));return}
+  // Looping scenes run only while they are actually visible. An IntersectionObserver is used
+  // because it stays correct inside the pinned, sideways-moving R.O.O.T. track.
+  const liveObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('live',e.isIntersecting)),{threshold:.2});
+  page.querySelectorAll('[data-live]').forEach(el=>liveObserver.observe(el));
   gsap.registerPlugin(ScrollTrigger,SplitText);
   page.classList.add('lp-anim');
   const lenis=new Lenis({duration:1.1,smoothWheel:true});
@@ -48,8 +52,6 @@ export function LandingMotion(){
     const write=()=>{el.textContent=o.v.toLocaleString('en-US',{minimumFractionDigits:decimals,maximumFractionDigits:decimals})};
     gsap.to(o,{v:end,duration:1.8,ease:'power2.out',onUpdate:write,scrollTrigger:{trigger:el,start:'top 90%',once:true}});
    });
-   // Looping micro-animations only run while their section is on screen
-   gsap.utils.toArray<HTMLElement>('.lp [data-live]').forEach(el=>ScrollTrigger.create({trigger:el,start:'top 80%',end:'bottom 10%',toggleClass:'live'}));
    // Parallax
    gsap.utils.toArray<HTMLElement>('.lp [data-parallax]').forEach(el=>gsap.fromTo(el,{yPercent:Number(el.dataset.parallax)},{yPercent:-Number(el.dataset.parallax),ease:'none',scrollTrigger:{trigger:el,start:'top bottom',end:'bottom top',scrub:true}}));
    // Demo screenshot unfolds from a tilted plane
@@ -86,7 +88,7 @@ export function LandingMotion(){
   const refresh=()=>{ScrollTrigger.sort();ScrollTrigger.refresh()};
   refresh();
   document.fonts?.ready.then(refresh);window.addEventListener('load',refresh);
-  return ()=>{window.removeEventListener('load',refresh);page.classList.remove('lp-anim');ctx.revert();gsap.ticker.remove(tick);lenis.destroy();delete window.__lenis;page.classList.remove('lp-ready')};
+  return ()=>{window.removeEventListener('load',refresh);liveObserver.disconnect();page.classList.remove('lp-anim');ctx.revert();gsap.ticker.remove(tick);lenis.destroy();delete window.__lenis;page.classList.remove('lp-ready')};
  },[]);
  return null;
 }

@@ -13,7 +13,7 @@ const base=process.env.CAPTURE_BASE_URL||'http://127.0.0.1:3100';
  const dash=await browser.newContext({viewport:{width:1440,height:900}});
  await dash.addInitScript(()=>{localStorage.setItem('rootsync-dashboard-role','Reliability Engineer');sessionStorage.setItem('rootsync-guide-open','closed')});
  const page=await dash.newPage();
- for(const [name,route] of [['dashboard','/dashboard'],['ko-3201','/assets/ko-3201'],['he-3301','/assets/he-3301']]){
+ for(const [name,route] of [['dashboard','/dashboard'],['ko-3201','/assets/ko-3201'],['he-3301','/assets/he-3301'],['actions','/actions']]){
   await page.goto(base+route);
   await page.locator('h1').first().waitFor({state:'visible'});
   if(route.startsWith('/assets/'))await page.locator('.machine-stage[data-ready="true"]').waitFor({state:'visible'});

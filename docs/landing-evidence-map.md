@@ -9,6 +9,7 @@ Reviewed 4 October 2026. Each claim on `/` is listed with where it comes from. S
 | Product name is ROOTSYNC | Dashboard branding, package name, handoff note |
 | R.O.O.T. is the operating model | Deck title "R.O.O.T. Strategy", solution and conclusion slides |
 | The four dimensions and their one-line definitions | Deck solution slide, quoted without change |
+| CALIBER logo and "Proposed by YAPYAP team" | Logo image and team names taken from the deck cover and team profile slide |
 | Hero headline "From fragmented evidence to accountable reliability action" | Deck cover subtitle |
 
 The brief uses "ROOT" and the older timeline workbook uses "KAUSYNC". Neither is shown on the page.
