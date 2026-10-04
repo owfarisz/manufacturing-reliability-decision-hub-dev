@@ -16,7 +16,7 @@ export function LandingMotion(){
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){page.querySelectorAll('[data-live]').forEach(el=>el.classList.add('live'));return}
   // Looping scenes run only while they are actually visible. An IntersectionObserver is used
   // because it stays correct inside the pinned, sideways-moving R.O.O.T. track.
-  const liveObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('live',e.isIntersecting)),{threshold:.2});
+  const liveObserver=new IntersectionObserver(entries=>entries.forEach(e=>e.target.classList.toggle('live',e.isIntersecting)),{rootMargin:'-12% 0px -12% 0px'});
   page.querySelectorAll('[data-live]').forEach(el=>liveObserver.observe(el));
   gsap.registerPlugin(ScrollTrigger,SplitText);
   page.classList.add('lp-anim');

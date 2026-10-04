@@ -102,7 +102,7 @@ function DimVisual({kind}:{kind:Dimension['visual']}){
   <div className="stations"><i className="token"/>{['Engineer','Approver','Planner','Technician'].map((t,i)=><div key={t} style={css({'--i':i})}><User size={16}/><span>{t}</span></div>)}</div>
  </div>;
  return <div className="lp-viz test">
-  <svg viewBox="0 0 300 110" preserveAspectRatio="none"><line x1="0" x2="300" y1="38" y2="38"/><path pathLength={1} d="M0 96C50 90 80 64 120 38S160 10 176 10L182 96C220 100 260 98 300 97"/></svg>
+  <svg viewBox="0 0 300 110"><line x1="0" x2="300" y1="38" y2="38"/><path pathLength={1} d="M0 96C50 90 80 64 120 38S160 10 176 10L182 96C220 100 260 98 300 97"/></svg>
   <ul>{['Equipment restored','Actions completed','Risk reduction verified'].map((t,i)=><li key={t} style={css({'--i':i})}><i><Check size={13}/></i>{t}</li>)}</ul>
   <b>Case closed</b>
  </div>;

@@ -179,7 +179,7 @@ html.lenis, html.lenis body { height: auto; }
 .lp-wave .ghost { stroke: #e0de5055; stroke-width: 9; filter: blur(4px); }
 .live .lp-wave path { animation: lp-vib .55s linear infinite; }
 .lp-fork { width: 100%; height: 200px; }
-.lp-fork path { fill: none; stroke: var(--lp-sky); stroke-width: 2; stroke-dasharray: 5 7; vector-effect: non-scaling-stroke; animation: lp-dash 1.2s linear infinite; }
+.lp-fork path { fill: none; stroke: var(--lp-sky); stroke-width: 2; stroke-dasharray: 5 7; animation: lp-dash 1.2s linear infinite; }
 .lp-same-cases { display: grid; gap: 16px; }
 .lp-same-cases article { padding: 20px 24px; border: 1px solid #ffffff2e; border-radius: var(--lp-r-card); background: #ffffff0d; }
 .lp-tag { color: #fff; font-size: 1.1rem; font-weight: 800; letter-spacing: .04em; }
@@ -256,9 +256,9 @@ html.lenis, html.lenis body { height: auto; }
 .lp-viz .stations .token { position: absolute; z-index: 1; left: 12.5%; top: 18px; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--lp-yellow); box-shadow: 0 0 14px var(--lp-yellow); }
 .live .lp-viz .stations .token { animation: lp-token 6s linear infinite; }
 /* T: the reading comes back under the limit, then three separate checks close the case */
-.lp-viz.test > svg { display: block; width: 100%; height: 120px; margin-top: 26px; overflow: visible; }
-.lp-viz.test > svg line { stroke: #ff8b94; stroke-width: 1.5; stroke-dasharray: 5 5; vector-effect: non-scaling-stroke; }
-.lp-viz.test > svg path { fill: none; stroke: var(--lp-cyan); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; vector-effect: non-scaling-stroke; }
+.lp-viz.test > svg { display: block; width: 100%; height: auto; margin-top: 26px; overflow: visible; }
+.lp-viz.test > svg line { stroke: #ff8b94; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.lp-viz.test > svg path { fill: none; stroke: var(--lp-cyan); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; }
 .lp-viz.test ul { margin-top: 16px; }
 .live .lp-viz.test > svg path { animation: lp-draw 6s var(--lp-ease) infinite; }
 .live .lp-viz.test li i { animation: lp-tick 6s linear infinite both; animation-delay: calc(2.6s + var(--i) * .55s); }
@@ -452,8 +452,8 @@ html.lenis, html.lenis body { height: auto; }
 @media (max-width: 900px) {
   .lp-hero { padding-top: 104px; }
   .lp-usecase-top { grid-template-columns: minmax(0, 1fr); }
-  .lp-chain { gap: 8px; --trip-scale: 1.2; }
-  .lp-chain li:not(:last-child)::after { display: none; }
+  .lp-chain { --trip-scale: 1.2; }
+  .lp-chain li:not(:last-child)::after { width: 16px; }
   .lp-viz { height: auto; min-height: 260px; }
   .lp-viz.organize { padding-bottom: 48px; }
   .lp-viz.rank { padding-bottom: 56px; }
@@ -466,6 +466,10 @@ html.lenis, html.lenis body { height: auto; }
   .lp-dim { grid-template-columns: minmax(0, 1fr); }
   .lp-relay { grid-template-columns: repeat(4, minmax(0, 1fr)); row-gap: 26px; }
   .lp-relay::before, .lp-relay::after { display: none; }
+  /* The single track is replaced by one connector per step, so each wrapped row keeps its line */
+  .lp-relay li { position: relative; }
+  .lp-relay li:not(:nth-child(4n))::after { content: ""; position: absolute; left: 50%; top: 27px; width: calc(100% + 8px); height: 3px; border-radius: 3px; background: #c3d5e3; transition: background-color .4s; }
+  .lp-relay li.done:not(:nth-child(4n))::after { background: var(--lp-mid); }
   .lp-scene { grid-template-columns: minmax(0, 1fr); }
   .lp-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .lp-same-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
@@ -489,7 +493,13 @@ html.lenis, html.lenis body { height: auto; }
   .lp-viz.organize .src li { margin: 0; }
   .lp-chip { padding: 8px 11px; }
   .lp-chip small { white-space: normal; }
-  .lp-chain { padding: 14px; --trip-scale: 1.14; }
+  /* On phones the mechanism chain becomes a vertical timeline with a line between every step */
+  .lp-chain { flex-direction: column; align-items: flex-start; gap: 0; padding: 16px; --trip-scale: 1.12; }
+  .lp-chain li { flex-direction: column; align-items: flex-start; }
+  .lp-chain li:not(:last-child)::after { width: 3px; height: 16px; margin-left: 24px; border-radius: 3px; background: linear-gradient(180deg, var(--lp-mid), var(--lp-cyan)); }
+  .lp-relay li:not(:nth-child(4n))::after { top: 22px; }
+  .lp-fork { height: 70px; width: 70px; }
+  .lp-fork path { stroke-width: 3; }
   .lp-chain li span { padding: 8px 12px; font-size: .8125rem; }
   .lp-hero-open { right: 8px; bottom: 8px; padding: 6px 11px; font-size: .75rem; }
   .lp-proposed img { height: 40px; }
