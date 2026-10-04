@@ -12,6 +12,7 @@ export function DevHub({view}:{view:'portfolio'|'ko'|'he'|'actions'}){
  useEffect(()=>{const saved=window.localStorage.getItem(roleStorageKey) as Role|null;if(saved&&dashboardRoles.includes(saved))setRole(saved)},[]);
  const choose=(next:Role)=>{window.localStorage.setItem(roleStorageKey,next);setRole(next)};
  if(!role)return <RolePicker roles={dashboardRoles} onChoose={choose}/>;
- const roleControl=<div className="role-switcher" aria-label="Current dashboard role"><span>Viewing as</span><strong>{role}</strong><button onClick={()=>{window.localStorage.removeItem(roleStorageKey);setRole(null)}}>Change role</button></div>;
+ const roleInitials=role==='Maintenance Planner'?'MP':'RE';
+ const roleControl=<button className="role-switcher" aria-label={`Change dashboard role, currently ${role}`} title={`Viewing as ${role}. Change role`} onClick={()=>{window.localStorage.removeItem(roleStorageKey);setRole(null)}}><span aria-hidden="true">{roleInitials}</span></button>;
  return <><Hub view={view} role={role} sidebarAddon={roleControl}/><OnboardingTour view={view} role={role}/></>;
 }
