@@ -476,3 +476,34 @@ body{background:var(--bg);color:var(--text)}
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* One connected, isometric plant scene for the portfolio queue. */
+.equipment-fleet .fleet-grid { display: none; }
+.plant-viewport {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 13px;
+  background: #0c202b;
+  cursor: grab;
+  overflow: hidden;
+  perspective: 1200px;
+  touch-action: none;
+}
+.plant-viewport.dragging { cursor: grabbing; }
+.plant-svg {
+  display: block;
+  width: 100%;
+  min-height: 250px;
+  transform: rotateX(var(--plant-x)) rotateY(var(--plant-y)) scale(.985);
+  transform-style: preserve-3d;
+  transform-origin: 50% 54%;
+  transition: transform .16s ease-out;
+}
+.plant-viewport:hover .plant-svg { transform: rotateX(var(--plant-x)) rotateY(var(--plant-y)) scale(1); }
+@media (max-width: 760px) {
+  .plant-viewport { margin-top: 12px; }
+  .plant-svg { width: 152%; margin-left: -26%; min-height: 205px; }
+}
