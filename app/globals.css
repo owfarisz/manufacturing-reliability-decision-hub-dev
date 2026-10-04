@@ -515,3 +515,26 @@ body{background:var(--bg);color:var(--text)}
 .plant-canvas { display: block; width: 100%; height: 100%; outline: 0; }
 .plant-fallback { padding: 22px; color: #d7e8ed; font-size: 13px; }
 @media (max-width: 760px) { .plant-webgl { height: 250px; } }
+
+/* Compact plant panel and legible copy on the dark scene. */
+.equipment-fleet .fleet-heading .eyebrow { color: #e6d954; }
+.equipment-fleet .fleet-heading h2 { color: #ffffff; letter-spacing: -.02em; }
+.equipment-fleet .fleet-heading p { color: #d8e8ed; }
+.plant-map-layout { display: grid; grid-template-columns: minmax(0, 1.78fr) minmax(188px, .72fr); gap: 12px; align-items: stretch; margin-top: 14px; }
+.plant-scene-wrap { position: relative; min-width: 0; }
+.plant-map-layout .plant-webgl { height: 272px; margin-top: 0; }
+.plant-alert { position: absolute; z-index: 3; display: grid; place-items: center; width: 27px; height: 27px; border: 3px solid #fff; border-radius: 50%; background: #d83b44; color: #fff; box-shadow: 0 5px 14px #07192288; font: 900 19px/1 Arial, sans-serif; pointer-events: none; }
+.alert-ko { left: 34%; top: 24%; }
+.alert-he { left: 67%; top: 18%; }
+.plant-focus-card { display: flex; flex-direction: column; padding: 16px; border: 1px solid #bfd7e1; border-radius: 13px; background: linear-gradient(160deg, #f9fcfd, #eaf5f8); color: #263f77; }
+.plant-focus-card .eyebrow { color: #42667e; }
+.plant-focus-card h3 { margin: 5px 0 12px; color: #263f77; font-size: 16px; line-height: 1.2; }
+.plant-focus-row { display: flex; align-items: center; gap: 8px; padding: 9px 0; border-top: 1px solid #d2e2e8; }
+.plant-focus-row > span { display: grid; place-items: center; flex: 0 0 auto; width: 21px; height: 21px; border-radius: 50%; background: #d83b44; color: #fff; font-weight: 900; }
+.plant-focus-row strong,.plant-focus-row small { display: block; }
+.plant-focus-row strong { color: #263f77; font-size: 12px; }
+.plant-focus-row small { margin-top: 2px; color: #607a90; font-size: 10px; }
+.plant-focus-row.he > span { background: #c8424d; }
+.plant-focus-card p { margin: 10px 0; color: #607a90; font-size: 10px; line-height: 1.45; }
+.plant-gesture { margin-top: auto; padding-top: 10px; border-top: 1px solid #d2e2e8; color: #42667e; font-size: 10px; font-weight: 800; line-height: 1.45; text-transform: uppercase; letter-spacing: .05em; }
+@media (max-width: 760px) { .plant-map-layout { grid-template-columns: 1fr; } .plant-map-layout .plant-webgl { height: 235px; } .plant-focus-card { min-height: 0; } }
