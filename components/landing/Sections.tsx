@@ -68,14 +68,15 @@ export function EvidenceSection(){
 }
 
 export function MechanismProblemSection(){
- const wave='M0 60 C20 60 20 20 40 20 S60 100 80 100 S100 20 120 20 S140 100 160 100 S180 20 200 20 S220 100 240 100 S260 60 280 60';
+ // Eight identical 80-unit periods, so sliding the path left by one period loops without a seam.
+ const wave='M-80 60'+Array.from({length:6},(_,i)=>{const x=-80+i*80;return ` C${x+13} 60 ${x+7} 14 ${x+20} 14 S${x+47} 106 ${x+60} 106 S${x+67} 60 ${x+80} 60`}).join('');
  return <section className="lp-section dark flush" id="problem" aria-labelledby="problem-title">
   <div className="lp-problem-head"><Chapter n="02">The problem</Chapter><h2 id="problem-title" data-split>379 assets failed once. Three mechanisms keep coming back.</h2></div>
   <IncidentField families={families} total={incidentTotal} scenes={fieldScenes} share={topFamilyShare}/>
   <div className="lp-same">
    <h3 data-split>{sameSignal.title}</h3>
-   <div className="lp-same-grid" data-reveal>
-    <div className="lp-same-signal"><svg className="lp-wave" viewBox="0 0 280 120" aria-hidden="true"><path d={wave} pathLength={1}/></svg><p>{sameSignal.signal}</p></div>
+   <div className="lp-same-grid" data-live>
+    <div className="lp-same-signal"><svg className="lp-wave" viewBox="0 0 280 120" aria-hidden="true"><line x1="0" x2="280" y1="22" y2="22"/><g><path className="ghost" d={wave}/><path d={wave}/></g></svg><p><i aria-hidden="true"/>{sameSignal.signal}</p></div>
     <svg className="lp-fork" viewBox="0 0 120 200" preserveAspectRatio="none" aria-hidden="true"><path d="M0 100C60 100 60 40 120 40"/><path d="M0 100C60 100 60 160 120 160"/></svg>
     <div className="lp-same-cases">{sameSignal.cases.map(c=><article key={c.tag}><p className="lp-tag">{c.tag} <span>{c.kind}</span></p><ol>{c.cause.map(x=><li key={x}>{x}</li>)}</ol></article>)}</div>
    </div>

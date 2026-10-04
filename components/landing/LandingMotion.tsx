@@ -69,8 +69,13 @@ export function LandingMotion(){
     const rx=gsap.quickTo(demoCard,'rotationX',{duration:.6,ease:'power3'}),ry=gsap.quickTo(demoCard,'rotationY',{duration:.6,ease:'power3'});
     heroEl.addEventListener('pointermove',e=>{const r=heroEl.getBoundingClientRect();ry(-14+((e.clientX-r.left)/r.width-.5)*14);rx(6-((e.clientY-r.top)/r.height-.5)*10)});
    }
-   // Same-signal waveform draws in
-   gsap.fromTo('.lp-wave path',{strokeDashoffset:1},{strokeDashoffset:0,duration:1.6,ease:'power2.inOut',stagger:.2,scrollTrigger:{trigger:'.lp-wave',start:'top 78%'}});
+   // Same signal, different cause: the vibrating signal lands first, the fork draws, then each asset slides in and its cause chain pops step by step
+   gsap.timeline({scrollTrigger:{trigger:'.lp-same-grid',start:'top 74%'},defaults:{ease:'power3.out'}})
+    .from('.lp-same-signal',{x:-70,opacity:0,duration:.7})
+    .from('.lp-wave g',{scaleY:0,transformOrigin:'50% 50%',duration:1.1,ease:'elastic.out(1.1,.35)'},.2)
+    .from('.lp-fork',{clipPath:'inset(0 100% 0 0)',duration:.6,ease:'power2.inOut'},.7)
+    .from('.lp-same-cases article',{x:110,opacity:0,rotate:2,duration:.75,stagger:.28,ease:'back.out(1.5)'},1)
+    .from('.lp-same-cases li',{scale:.4,opacity:0,duration:.4,stagger:.11,ease:'back.out(2.2)'},1.35);
 
    const mm=gsap.matchMedia();
    mm.add('(min-width: 901px)',()=>{

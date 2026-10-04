@@ -169,9 +169,15 @@ html.lenis, html.lenis body { height: auto; }
 .lp-same h3 { font-size: clamp(1.8rem, 3.8vw, 3.2rem); font-weight: 800; line-height: 1.06; letter-spacing: -.03em; }
 .lp-same-grid { display: grid; grid-template-columns: minmax(0, 1fr) clamp(60px, 9vw, 130px) minmax(0, 1.15fr); align-items: center; margin-top: clamp(28px, 4vw, 52px); }
 .lp-same-signal { padding: 26px; border: 1px solid #ffffff2e; border-radius: var(--lp-r-card); background: #ffffff0d; }
-.lp-same-signal p { margin-top: 6px; color: var(--lp-yellow); font-size: 1.5rem; font-weight: 800; }
-.lp-wave { display: block; width: 100%; }
-.lp-wave path { fill: none; stroke: var(--lp-yellow); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; }
+.lp-same-signal p { display: flex; align-items: center; gap: 10px; margin-top: 6px; color: var(--lp-yellow); font-size: 1.5rem; font-weight: 800; }
+.lp-same-signal p i { width: 12px; height: 12px; border-radius: 50%; background: #ff5a67; }
+.live .lp-same-signal p i { animation: lp-beacon-red 1s ease-out infinite; }
+.live .lp-same-signal { animation: lp-shake .5s linear infinite; }
+.lp-wave { display: block; width: 100%; overflow: hidden; }
+.lp-wave line { stroke: #ff8b94; stroke-width: 1.5; stroke-dasharray: 5 5; }
+.lp-wave path { fill: none; stroke: var(--lp-yellow); stroke-width: 3; stroke-linecap: round; }
+.lp-wave .ghost { stroke: #e0de5055; stroke-width: 9; filter: blur(4px); }
+.live .lp-wave path { animation: lp-vib .55s linear infinite; }
 .lp-fork { width: 100%; height: 200px; }
 .lp-fork path { fill: none; stroke: var(--lp-sky); stroke-width: 2; stroke-dasharray: 5 7; vector-effect: non-scaling-stroke; animation: lp-dash 1.2s linear infinite; }
 .lp-same-cases { display: grid; gap: 16px; }
@@ -383,6 +389,9 @@ html.lenis, html.lenis body { height: auto; }
 .lp-footer > .lp-source { margin-top: 18px; color: #a9c2e0; }
 
 /* Keyframes */
+@keyframes lp-vib { to { transform: translateX(-80px); } }
+@keyframes lp-shake { 0%, 100% { translate: 0 0; } 25% { translate: .8px -.6px; } 50% { translate: -.8px .6px; } 75% { translate: .6px .8px; } }
+@keyframes lp-beacon-red { from { box-shadow: 0 0 0 0 #ff5a67cc; } to { box-shadow: 0 0 0 14px #ff5a6700; } }
 @keyframes lp-spin { to { transform: rotate(360deg); } }
 @keyframes lp-blink { 50% { opacity: .35; } }
 @keyframes lp-float { 50% { translate: 0 -10px; } }
